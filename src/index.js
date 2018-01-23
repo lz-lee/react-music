@@ -7,9 +7,9 @@ import 'common/styl/index.styl'
 
 // const store = createStore()
 ReactDOM.render(
-  <Provider>
+  // <Provider>
     <RouteConfig>
-    
+
     </RouteConfig>
-  </Provider>
+  // </Provider>
   , document.getElementById('root'));

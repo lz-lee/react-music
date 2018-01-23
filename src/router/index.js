@@ -23,7 +23,6 @@ export default class RouteConfig extends Component{
               <Route path="/recommend" component={Recommend}></Route>
               <Route path="/rank" component={Rank}></Route>
               <Route path="/singer" component={Singer}></Route>
-              <Route path="/singer" component={Singer}></Route>
               <Route path="/search" component={Search}></Route>
               <Route path="/user" component={User}></Route>
               <Redirect from="/" to="/recommend"></Redirect>
