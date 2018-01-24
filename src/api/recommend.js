@@ -32,3 +32,14 @@ export function getNewAlbum() {
 
   return jsonp(url.newAlbum, data, option)
 }
+
+export function getAlbumDetail(id) {
+  const data = Object.assign({}, commonParams, {
+    albummid: id,
+    g_tk: 5381,
+    hostUin: 0,
+    platform: 'yqq',
+    needNewCode: 0
+  })
+  return jsonp(url.albumDetail, data, options)
+}

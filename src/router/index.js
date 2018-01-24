@@ -1,15 +1,15 @@
 import React, {Component} from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 
-import LazyLoad from 'common/js/lazyLoad'
+import LazyLoadComponent from 'common/js/lazyLoad'
 
-const Headers = LazyLoad({loader: () => import('components/header/header')})
-const NavBar = LazyLoad({loader: () => import('components/navBar/navBar')})
-const Recommend = LazyLoad({loader: () => import('components/recommend/recommend')})
-const Rank = LazyLoad({loader: () => import('components/rank/rank')})
-const Singer = LazyLoad({loader: () => import('components/singer/singer')})
-const Search = LazyLoad({loader: () => import('components/search/search')})
-const User = LazyLoad({loader: () => import('components/user/user')})
+const Headers = LazyLoadComponent({loader: () => import('components/header/header')})
+const NavBar = LazyLoadComponent({loader: () => import('components/navBar/navBar')})
+const Recommend = LazyLoadComponent({loader: () => import('components/recommend/recommend')})
+const Rank = LazyLoadComponent({loader: () => import('components/rank/rank')})
+const Singer = LazyLoadComponent({loader: () => import('components/singer/singer')})
+const Search = LazyLoadComponent({loader: () => import('components/search/search')})
+const User = LazyLoadComponent({loader: () => import('components/user/user')})
 
 export default class RouteConfig extends Component{
   render() {
