@@ -10,6 +10,9 @@ class Header extends React.Component {
   }
 
   goBack() {
+    if (this.props.hide) {
+      this.props.hide()
+    }
     this.props.history.goBack()
   }
 
