@@ -1,17 +1,20 @@
 import React, {Component} from 'react'
 import {getRecommend, getNewAlbum} from 'api/recommend'
 import * as Album from 'common/js/album'
+import Loading from 'base/loading/loading'
 import Scroll from 'base/scroll/scroll'
-import './recommend.styl'
 import Swiper from 'swiper'
-import 'swiper/dist/css/swiper.css'
+import LazyLoad, {forceCheck} from 'react-lazyload'
 import {ERR_OK} from 'api/config'
+import './recommend.styl'
+import 'swiper/dist/css/swiper.css'
 
 export default class Recommend extends Component{
 
   constructor(props) {
     super(props)
     this.state = {
+      showLoading: true,
       recommends: [],
       albumList: [],
       refresh: false
@@ -45,8 +48,12 @@ export default class Recommend extends Component{
           return +new Date(b.public_time) - +new Date(a.public_time)
         })
         this.setState({
-          albumList: albumList,
-          refresh: true
+          showLoading: false,
+          albumList: albumList
+        }, () => {
+          this.setState({
+            refresh: true
+          })
         })
       }
     })
@@ -55,12 +62,12 @@ export default class Recommend extends Component{
   render() {
     return(
       <div className="recommend-wrapper">
-        <Scroll refresh={this.state.refresh}>
+        <Scroll refresh={this.state.refresh} onScroll={(e) => forceCheck()}>
           <div>
             <div className="swiper-container">
               <div className="swiper-wrapper">
                 {
-                  this.state.recommends.map(v => 
+                  this.state.recommends.map(v =>
                     <div className="swiper-slide" key={v.linkUrl}>
                       <a href={v.linkUrl} className="slider-nav">
                         <img src={v.picUrl} width="100%" height="100%" alt=""/>
@@ -82,7 +89,9 @@ export default class Recommend extends Component{
                           key={v.album_mid}
                         >
                           <div className="icon">
-                            <img src={album.img} width="100%" height="100%" alt=""/>
+                            <LazyLoad>
+                              <img src={album.img} width="100%" height="100%" alt=""/>
+                            </LazyLoad>
                           </div>
                           <div className="text">
                             <div className="album-name">{album.name}</div>
@@ -97,6 +106,7 @@ export default class Recommend extends Component{
             </div>
           </div>
         </Scroll>
+        <Loading title="正在加载..." show={this.state.showLoading}></Loading>
       </div>
     )
   }

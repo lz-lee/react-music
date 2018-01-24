@@ -40,7 +40,7 @@ export default class Scroll extends Component{
       }
     }
   }
-  componentWillUpdate (nextProps, nextState) {
+  componentDidUpdate (nextProps, nextState) {
     if (this.scroll && this.props.refresh) {
       this.scroll.refresh()
     }
@@ -50,7 +50,7 @@ export default class Scroll extends Component{
     this.scroll.off('scroll')
     this.scroll = null
   }
-  
+
   render() {
     return (
       <div
