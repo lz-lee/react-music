@@ -1,15 +1,19 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {createStore} from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import {Provider} from 'react-redux'
+import thunk from 'redux-thunk'
+import reducer from 'store/index'
 import RouteConfig from 'src/router'
 import 'common/styl/index.styl'
 
-// const store = createStore()
+const store = createStore(
+  reducer,
+  compose(applyMiddleware(thunk), window.devToolsExtension ? window.devToolsExtension() : f => f))
 ReactDOM.render(
-  // <Provider>
+  <Provider store={store}>
     <RouteConfig>
 
     </RouteConfig>
-  // </Provider>
+  </Provider>
   , document.getElementById('root'));

@@ -1,6 +1,6 @@
 import jsonp from './jsonp'
 import {url, commonParams, options} from './config'
-// import axios from 'axios'
+import axios from 'axios'
 
 export function getRecommend() {
   const data = Object.assign({}, commonParams, {
@@ -13,33 +13,45 @@ export function getRecommend() {
   return jsonp(url.slider, data, options)
 }
 
-export function getNewAlbum() {
+export function getDiscList() {
+  const url = '/api/getDiscList'
+
   const data = Object.assign({}, commonParams, {
-    g_tk: 1278911659,
-		hostUin: 0,
-		platform: "yqq",
-		needNewCode: 0,
-		data: `{"albumlib":
-		{"method":"get_album_by_tags","param":
-		{"area":1,"company":-1,"genre":-1,"type":-1,"year":-1,"sort":2,"get_tags":1,"sin":0,"num":50,"click_albumid":0},
-		"module":"music.web_album_library"}}`
+    platform: 'yqq',
+    hostUin: 0,
+    sin: 0,
+    ein: 29,
+    sortId: 5,
+    needNewCode: 0,
+    categoryId: 10000000,
+    rnd: Math.random(),
+    format: 'json'
   })
 
-  const option = {
-    param: 'callback',
-    prefix: 'callback'
-  }
-
-  return jsonp(url.newAlbum, data, option)
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
 }
 
-export function getAlbumDetail(id) {
+export function getSongList(disstid) {
+  const url = '/api/getCdInfo'
+
   const data = Object.assign({}, commonParams, {
-    albummid: id,
-    g_tk: 5381,
-    hostUin: 0,
+    disstid,
+    type: 1,
+    json: 1,
+    utf8: 1,
+    onlysong: 0,
     platform: 'yqq',
+    hostUin: 0,
     needNewCode: 0
   })
-  return jsonp(url.albumDetail, data, options)
+
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
 }

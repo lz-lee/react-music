@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {Route} from 'react-router-dom'
 
-import {getRecommend, getNewAlbum} from 'api/recommend'
-import {createAlbum} from 'common/js/album'
+import {getRecommend, getDiscList} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 
 import Loading from 'base/loading/loading'
@@ -10,22 +10,23 @@ import Scroll from 'base/scroll/scroll'
 import Swiper from 'swiper'
 
 import LazyLoadComponent from 'common/js/lazyLoad'
-
 import LazyLoad, {forceCheck} from 'react-lazyload'
+
+import {setDisc} from 'store/action'
+
 import './recommend.styl'
 import 'swiper/dist/css/swiper.css'
 
-const AlbumDetail = LazyLoadComponent({loader: () => import('components/album/album')})
+const Disc = LazyLoadComponent({loader: () => import('components/disc/disc')})
 
-export default class Recommend extends Component{
+class Recommend extends Component{
 
   constructor(props) {
     super(props)
     this.state = {
-      showLoading: true,
       refresh: false,
       recommends: [],
-      albumList: []
+      discList: []
     }
   }
 
@@ -47,16 +48,10 @@ export default class Recommend extends Component{
       }
     })
 
-    getNewAlbum().then(res => {
+    getDiscList().then(res => {
       if (res.code === ERR_OK) {
-        let albumList = res.albumlib.data.list
-        // 根据发布时间降序排列
-        albumList.sort((a, b) => {
-          return +new Date(b.public_time) - +new Date(a.public_time)
-        })
         this.setState({
-          showLoading: false,
-          albumList: albumList
+          discList: res.data.list
         }, () => {
           this.setState({
             refresh: true
@@ -66,7 +61,10 @@ export default class Recommend extends Component{
     })
   }
 
-  selectAlbum(url) {
+  selectAlbum(v) {
+    const {match} = this.props
+    const url = `${match.url}/${v.dissid}`
+    this.props.setDisc(v)
     this.props.history.push(url)
   }
 
@@ -74,7 +72,10 @@ export default class Recommend extends Component{
     let {match} = this.props
     return(
       <div className="recommend-wrapper">
-        <Scroll refresh={this.state.refresh} onScroll={(e) => forceCheck()}>
+        <Scroll
+          probeType={3}
+          refresh={this.state.refresh}
+          onScroll={() => forceCheck()}>
           <div>
             <div className="swiper-container">
               <div className="swiper-wrapper">
@@ -90,39 +91,40 @@ export default class Recommend extends Component{
               </div>
               <div className="swiper-pagination"></div>
             </div>
-            <div className="album-wrapper">
-                <h1 className="title">最新专辑</h1>
-                <div className="album-list">
+            <div className="recommend-list">
+                <h1 className="list-title">热门歌单推荐</h1>
+                <ul>
                   {
-                    this.state.albumList.map(v => {
-                      let album = createAlbum(v)
+                    this.state.discList.length ? this.state.discList.map(v =>{
                       return (
-                        <div
-                          className="album-item"
-                          key={v.album_mid}
-                          onClick={() => this.selectAlbum(`${match.url}/${album.mid}`)}
-                        >
+                        <li
+                        onClick={() => this.selectAlbum(v)}
+                        key={v.dissname}
+                        className="item">
                           <div className="icon">
                             <LazyLoad>
-                              <img src={album.img} width="100%" height="100%" alt=""/>
+                              <img src={v.imgurl} width="60" height="60" alt=""/>
                             </LazyLoad>
                           </div>
                           <div className="text">
-                            <div className="album-name">{album.name}</div>
-                            <div className="singer-name">{album.singer}</div>
-                            <div className="public-time">{album.publicTime}</div>
+                            <h2 className="name">{v.creator.name}</h2>
+                            <p className="desc">{v.dissname}</p>
                           </div>
-                        </div>
+                        </li>
                       )
-                    })
+                    }) : null
                   }
-                </div>
+                </ul>
             </div>
           </div>
         </Scroll>
-        <Loading title="正在加载..." show={this.state.showLoading}></Loading>
-        <Route path={`${match.url}/:id`} component={AlbumDetail}></Route>
+        {!this.state.discList.length ? <Loading title="正在加载..."></Loading> : null}
+        <Route path={`${match.url}/:id`} component={Disc}></Route>
       </div>
     )
   }
 }
+
+Recommend = connect(state => state, {setDisc})(Recommend)
+
+export default Recommend
