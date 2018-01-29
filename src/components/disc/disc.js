@@ -19,6 +19,9 @@ class Disc extends React.Component{
   }
 
   componentDidMount() {
+    this.setState({
+      show: true
+    })
     // 切换子路由的动画未做
     const {id} = this.props.match.params
     getSongList(id).then(res => {
@@ -56,9 +59,7 @@ class Disc extends React.Component{
         timeout={300}
         classNames="fade"
         >
-        <div>
           <MusicList title={dissname} bgImage={imgurl} songs={this.state.songList} ></MusicList>
-        </div>
       </CSSTransition>
     )
   }

@@ -4,9 +4,6 @@ import {connect} from 'react-redux'
 import './songlist.styl'
 
 class SongList extends React.Component {
-  constructor(props) {
-    super(props)
-  }
 
   static propTypes = {
     songs: PropTypes.array,

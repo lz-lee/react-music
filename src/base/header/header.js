@@ -1,31 +1,17 @@
-import React from 'react'
-import {withRouter} from 'react-router-dom'
+import React, {Component} from 'react'
+import {NavLink} from 'react-router-dom'
 import './header.styl'
-
-class Header extends React.Component {
-
-  constructor() {
-    super()
-    this.goBack = this.goBack.bind(this)
-  }
-
-  goBack() {
-    if (this.props.hide) {
-      this.props.hide()
-    }
-    this.props.history.goBack()
-  }
-
+ 
+export default class Headers extends Component{
   render() {
     return (
-      <div className="header-wrapper">
-        <span className="header-back" onClick={this.goBack}>
-          <i className="icon-back"></i>
-        </span>
-        <div className="title">{this.props.title}</div>
+      <div className="m-header">
+        <div className="icon"></div>
+        <h1 className="text">React-Music</h1>
+        <NavLink to="/user" className="mine">
+          <i className="icon-mine"></i>
+        </NavLink>
       </div>
     )
   }
 }
-
-export default withRouter(Header)

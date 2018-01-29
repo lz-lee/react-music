@@ -117,7 +117,6 @@ module.exports = function(proxy, allowedHost) {
           params: req.query
         }).then((response) => {
           let ret = response.data
-          console.log(ret)
           if (typeof ret === 'string') {
             const reg = /^\w+\(({.+})\)$/
             const matches = ret.match(reg)

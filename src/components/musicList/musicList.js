@@ -85,7 +85,6 @@ class MusicList extends React.Component {
   }
   
   render() {
-    console.log(this.props.songs)
     return (
       <div className="music-list">
         <div className="back" onClick={this.back}>

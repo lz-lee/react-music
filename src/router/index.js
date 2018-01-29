@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom
 
 import LazyLoadComponent from 'common/js/lazyLoad'
 
-const Headers = LazyLoadComponent({loader: () => import('components/header/header')})
+const Headers = LazyLoadComponent({loader: () => import('base/header/header')})
 const NavBar = LazyLoadComponent({loader: () => import('components/navBar/navBar')})
 const Recommend = LazyLoadComponent({loader: () => import('components/recommend/recommend')})
 const Rank = LazyLoadComponent({loader: () => import('components/rank/rank')})
