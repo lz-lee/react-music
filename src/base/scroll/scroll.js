@@ -81,7 +81,7 @@ export default class Scroll extends Component{
         this.props.onScroll(scroll)
       })
     }
-    
+
     if (this.props.pullup) {
       this.scroll.on('scrollEnd', () => {
         if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
