@@ -1,4 +1,5 @@
 const state = {
-  disc: {}
+  disc: {},
+  singer: {}
 }
 export default state 

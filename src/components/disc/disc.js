@@ -13,7 +13,6 @@ class Disc extends React.Component{
     super(props)
     this.state = {
       show: false,
-      refresh: false,
       songList: [],
     }
   }
@@ -28,10 +27,6 @@ class Disc extends React.Component{
       if (res.code === ERR_OK) {
         this.setState({
           songList: this._format(res.cdlist[0].songlist)
-        }, () => {
-          this.setState({
-            refresh: true
-          })
         })
       }
     })
@@ -65,6 +60,6 @@ class Disc extends React.Component{
   }
 }
 
-Disc = connect(state => state.disc)(Disc)
+Disc = connect(state => state)(Disc)
 
 export default Disc

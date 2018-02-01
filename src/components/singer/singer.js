@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Route} from 'react-router-dom'
-// import {connect} from 'react-redux'
+import {connect} from 'react-redux'
 
 import ListView from 'base/listview/listview'
 import SingerDetail from 'base/singerDetail/singerDetail'
@@ -9,13 +9,15 @@ import {getSingerList} from 'api/singer'
 import Singers from 'common/js/singer'
 import {ERR_OK} from 'api/config'
 
+import {setSinger} from 'store/action'
+
 import './singer.styl'
 
 const HOT_NAME = '热门'
 
 const HOT_LEN = 10
 
-export default class Singer extends Component{
+class Singer extends Component{
   constructor(props) {
     super(props)
     this.state = {
@@ -23,6 +25,7 @@ export default class Singer extends Component{
       singers: []
     }
     this._getSignerList = this._getSignerList.bind(this)
+    this.selectSinger = this.selectSinger.bind(this)
   }
 
   componentDidMount() {
@@ -90,18 +93,21 @@ export default class Singer extends Component{
 
   selectSinger(v) {
     const {match} = this.props
-    const url = `${match.url}/${v.dissid}`
-    
+    const url = `${match.url}/${v.id}`
     this.props.history.push(url)
+    this.props.setSinger(v)
   }
   
   render() {
     let {match} = this.props
     return(
       <div className="singer-wrapper" ref="singer">
-        <ListView data={this.state.singers} refresh={this.state.refresh}></ListView>
+        <ListView data={this.state.singers} refresh={this.state.refresh} selectItem={this.selectSinger}></ListView>
         <Route path={`${match.url}/:id`} component={SingerDetail}></Route>
       </div>
     )
   }
 }
+
+Singer = connect(null, {setSinger})(Singer)
+export default Singer

@@ -33,12 +33,14 @@ export default class ListView extends React.Component {
 
   static propTypes = {
     data: PropTypes.array,
-    refresh: PropTypes.bool
+    refresh: PropTypes.bool,
+    selectItem: PropTypes.func,
   }
 
   static defaulProps = {
     data: [],
-    refresh: false
+    refresh: false,
+    selectItem: null
   }
   
   componentWillMount () {
@@ -211,6 +213,7 @@ export default class ListView extends React.Component {
                     {
                       v.items.map((k) =>
                         <li
+                          onClick={() => this.props.selectItem(k)}
                           className="list-group-item"
                           key={k.id}
                           >
