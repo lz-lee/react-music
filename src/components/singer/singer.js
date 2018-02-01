@@ -32,7 +32,6 @@ export default class Singer extends Component{
   _getSignerList() {
     getSingerList().then((res) => {
       if (res.code === ERR_OK) {
-        console.log(this._normalizeSinger(res.data.list))
         this.setState({
           singers: this._normalizeSinger(res.data.list)
         }, () => {

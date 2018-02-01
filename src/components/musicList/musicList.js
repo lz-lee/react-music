@@ -113,7 +113,7 @@ class MusicList extends React.Component {
           className="list">
           <Scroll
             probeType={3}
-            refresh={this.props.refresh}
+            data={this.props.songs}
             onScroll={this.onScroll}
           >
             <div className="song-list-wrapper">

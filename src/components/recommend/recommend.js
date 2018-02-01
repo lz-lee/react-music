@@ -61,6 +61,14 @@ class Recommend extends Component{
     })
   }
 
+  componentWillUpdate (nextProps, nextState) {
+    console.log('will update')
+  }
+  
+  componentDidUpdate(prevProps, prevState) {
+    console.log('did update')
+  }
+
   selectAlbum(v) {
     const {match} = this.props
     const url = `${match.url}/${v.dissid}`
@@ -74,7 +82,7 @@ class Recommend extends Component{
       <div className="recommend-wrapper">
         <Scroll
           probeType={3}
-          refresh={this.state.refresh}
+          data={this.state.discList}
           onScroll={() => forceCheck()}>
           <div>
             <div className="swiper-container">

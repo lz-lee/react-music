@@ -11,9 +11,9 @@ export default class Scroll extends Component{
 
   }
   static propTypes = {
+    data: PropTypes.array,
     probeType: PropTypes.number,
     click: PropTypes.bool,
-    refresh: PropTypes.bool,
     beforeScroll: PropTypes.bool,
     pullUp: PropTypes.bool,
     onScroll: PropTypes.func,
@@ -22,9 +22,9 @@ export default class Scroll extends Component{
   }
 
   static defaultProps = {
+    data: null,
     probeType: 1,
     click: true,
-    refresh: false,
     beforeScroll: false,
     pullUp: false,
     onScroll: null,
@@ -37,16 +37,20 @@ export default class Scroll extends Component{
     }, 20)
   }
 
-  componentDidUpdate (nextProps, nextState) {
-    if (this.scroll && this.props.refresh) {
-      this.scroll.refresh()
+  componentWillReceiveProps(nextProps) {
+    console.log(Object.is(this.props.data, nextProps.data))
+    if (this.props.data !== nextProps.data) {
+      setTimeout(() => {
+        this.refresh()
+      }, 20)
     }
   }
-
+  
   componentWillUnmount() {
     this.scroll.off('scroll')
     this.scroll = null
   }
+
   refresh() {
     this.scroll && this.scroll.refresh()
   }
@@ -100,7 +104,7 @@ export default class Scroll extends Component{
   render() {
     return (
       <div
-        className="scroll-wrapper"
+        className={this.props.className ? this.props.className : 'scroll-wrapper'}
         ref="scrollWrapper">
         {this.props.children}
       </div>
