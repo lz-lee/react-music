@@ -81,9 +81,6 @@ export default class ListView extends React.Component {
       return this._getDiff(newProps, newState)
     }
 
-    if (this.props.refresh !== newProps.refresh) {
-      return true
-    }
     return true
   }
 
@@ -120,7 +117,6 @@ export default class ListView extends React.Component {
   }
 
   handlerScroll(pos) {
-    console.log(pos)
     this.setState({
       scrollY: pos.y
     })

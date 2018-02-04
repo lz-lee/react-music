@@ -14,3 +14,32 @@
   &.fade-exit-active
     transform translate3d(100%, 0, 0)
     transition transform .3s ease-in
+    
+.player
+  .normal-player
+    &.normal-enter
+      opacity: 0
+      .top
+        transform: translate3d(0, -100px, 0)
+      .bottom
+        transform: translate3d(0, 100px, 0)
+      &.normal-enter-active
+        opacity 1
+        transition: opacity 0.4s
+        .top, .bottom
+          transform translate3d(0, 0, 0)
+          transition: transform 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32)
+
+    &.normal-exit
+      opacity 1
+      .top, .bottom
+        transform translate3d(0, 0, 0)
+      &.normal-exit-active
+        opacity 0
+        transition all .4s
+        .top
+          transform: translate3d(0, -100px, 0)
+          transition: transform 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32)
+        .bottom
+          transform: translate3d(0, 100px, 0)
+          transition: transform 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32)

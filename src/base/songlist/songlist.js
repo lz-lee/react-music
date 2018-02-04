@@ -1,22 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
 import './songlist.styl'
 
 class SongList extends React.Component {
 
   static propTypes = {
     songs: PropTypes.array,
-    rank: PropTypes.bool
+    rank: PropTypes.bool,
+    select: PropTypes.func.isRequired
   }
 
   static defaultProps = {
     songs: [],
-    rank: false
+    rank: false,
+    select: null
   }
 
-  selectItem(v) {
-    console.log(v)
+  selectItem(v, i) {
+    if (this.props.select) {
+      this.props.select(v, i)
+    }
   }
 
   getRankCls(index) {
@@ -42,7 +45,7 @@ class SongList extends React.Component {
             ? this.props.songs.map((v, i) => (
               <li 
                 key={v.mid}
-                onClick={() => this.selectItem(v)}
+                onClick={() => this.selectItem(v, i)}
                 className="item">
                 {
                   this.props.rank
@@ -65,7 +68,5 @@ class SongList extends React.Component {
     )
   }
 }
-
-SongList = connect(null, {})(SongList)
 
 export default SongList

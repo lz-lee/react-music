@@ -1,12 +1,14 @@
 import React from 'react'
 import {withRouter} from 'react-router-dom'
-import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
 
 import Loading from 'base/loading/loading'
 import Scroll from 'base/scroll/scroll'
 import SongList from 'base/songlist/songlist'
 import {prefix} from 'common/js/prefix'
+
+import {selectPlay} from 'store/action'
 
 import './musicList.styl'
 
@@ -23,26 +25,32 @@ class MusicList extends React.Component {
     this.back = this.back.bind(this)
     this.random = this.random.bind(this)
     this.onScroll = this.onScroll.bind(this)
+    this.selectSong = this.selectSong.bind(this)
   }
 
   static propTypes = {
     title: PropTypes.string,
     bgImage: PropTypes.string,
     songs: PropTypes.array,
-    rank: PropTypes.bool,
-    refresh: PropTypes.bool
+    rank: PropTypes.bool
   }
 
   static defaultProps = {
     title: '',
     bgImage: '',
     songs: [],
-    rank: false,
-    refresh: false
+    rank: false
   }
 
   back() {
     this.props.history.goBack()
+  }
+
+  selectSong(song, index) {
+    this.props.selectPlay && this.props.selectPlay({
+      list: this.props.songs,
+      index
+    })
   }
 
   random() {
@@ -118,7 +126,7 @@ class MusicList extends React.Component {
           >
             <div className="song-list-wrapper">
               {
-                <SongList songs={this.props.songs} rank={this.props.rank}></SongList>
+                <SongList songs={this.props.songs} rank={this.props.rank} select={this.selectSong}></SongList>
               }
             </div>
             {!this.props.songs.length ? <Loading></Loading> : null}
@@ -129,6 +137,6 @@ class MusicList extends React.Component {
   }
 }
 
-MusicList = connect(state => state)(withRouter(MusicList))
+MusicList = connect(null, {selectPlay})(withRouter(MusicList))
 
 export default MusicList

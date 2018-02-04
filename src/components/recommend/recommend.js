@@ -52,10 +52,6 @@ class Recommend extends Component{
       if (res.code === ERR_OK) {
         this.setState({
           discList: res.data.list
-        }, () => {
-          this.setState({
-            refresh: true
-          })
         })
       }
     })

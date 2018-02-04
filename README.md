@@ -41,3 +41,41 @@
 #### 3、`componentWillReceiveProps(nextProps)` 与 `shouldComponentUpdate(newProps, newState)` 
 
 - 组件中的 `this.props` 与 这两个生命周期中的 `nextProps 、newProps` 是同一个引用
+
+
+#### 4、动画 [react-transition-group](https://reactcommunity.org/react-transition-group/#CSSTransition-prop-onEntered)
+
+- `CSSTranstion` 模块: 嵌套动画，需要将
+
+    ```
+    .fade-enter {
+        opacity: 0.01;
+    }
+    .fade-enter .name{
+        transform: translate3d(-100%, 0, 0);
+    }
+
+    .fade-enter.fade-enter-active {
+        opacity: 1;
+        transition: opacity 1000ms ease-in;
+    }
+    .fade-enter.fade-enter-active .name{
+        transform: translate3d(0, 0, 0);
+        transition: transform 1000ms ease-in;
+    }
+    .fade-exit {
+        opacity: 1;
+    }
+    .fade-exit .name {
+        transform: translate3d(0, 0, 0);
+    }
+    .fade-exit.fade-exit-active {
+        opacity: 0.01;
+        transition: opacity 800ms ease-in;
+    }
+    .fade-exit.fade-exit-active .name{
+        transform: translate3d(-100%, 0, 0);
+        transition: transform 1000ms ease-in;
+    }
+
+    ```

@@ -21,7 +21,6 @@ class Singer extends Component{
   constructor(props) {
     super(props)
     this.state = {
-      refresh: false,
       singers: []
     }
     this._getSignerList = this._getSignerList.bind(this)
@@ -37,10 +36,6 @@ class Singer extends Component{
       if (res.code === ERR_OK) {
         this.setState({
           singers: this._normalizeSinger(res.data.list)
-        }, () => {
-          this.setState({
-            refresh: true 
-          })
         })
       }
     })
@@ -102,7 +97,7 @@ class Singer extends Component{
     let {match} = this.props
     return(
       <div className="singer-wrapper" ref="singer">
-        <ListView data={this.state.singers} refresh={this.state.refresh} selectItem={this.selectSinger}></ListView>
+        <ListView data={this.state.singers} selectItem={this.selectSinger}></ListView>
         <Route path={`${match.url}/:id`} component={SingerDetail}></Route>
       </div>
     )

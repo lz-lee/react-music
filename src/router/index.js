@@ -10,6 +10,7 @@ const Rank = LazyLoadComponent({loader: () => import('components/rank/rank')})
 const Singer = LazyLoadComponent({loader: () => import('components/singer/singer')})
 const Search = LazyLoadComponent({loader: () => import('components/search/search')})
 const User = LazyLoadComponent({loader: () => import('components/user/user')})
+const Player = LazyLoadComponent({loader: () => import('components/player/player')})
 
 export default class RouteConfig extends Component{
   render() {
@@ -28,6 +29,7 @@ export default class RouteConfig extends Component{
               <Redirect from="/" to="/recommend"></Redirect>
               <Route component={Recommend}></Route>
             </Switch>
+            <Player></Player>
           </div>
         </div>
       </Router>
