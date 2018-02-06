@@ -23,9 +23,3 @@ export function selectPlay({list, index}) {
     dispatch(actions.set_currentSong(currentSong))
   }
 }
-
-export function setFullScreen(flag) {
-  return dispatch => {
-    dispatch(actions.set_fullScreen(flag))
-  }
-}

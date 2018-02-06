@@ -41,7 +41,7 @@ class Disc extends React.Component{
     })
     return ret
   }
-
+  
   render() {
     const {disc:{dissname, imgurl, dissid}} = this.props
     if (!dissid) {
