@@ -39,8 +39,3 @@ export const set_currentIndex = index => ({
   type: types.SET_CURRENT_INDEX,
   payload: index
 })
-
-export const set_currentSong = song => ({
-  type: types.SET_CURRENT_SONG,
-  payload: song
-})

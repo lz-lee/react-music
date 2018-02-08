@@ -55,14 +55,12 @@ export function player(state = initState.player, action) {
         mode: payload
       }
     case types.SET_CURRENT_INDEX:
+      // 修改currentIndex的同时，提交currentSong
+      const currentSong = state.playList[payload]
       return {
         ...state,
+        currentSong,
         currentIndex: payload
-      }
-    case types.SET_CURRENT_SONG:
-      return {
-        ...state,
-        currentSong: {...state.currentSong, ...payload}
       }
     default:
       return state

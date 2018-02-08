@@ -8,7 +8,7 @@ import Scroll from 'base/scroll/scroll'
 import SongList from 'base/songlist/songlist'
 import {prefix} from 'common/js/prefix'
 
-import {selectPlay} from 'store/action'
+import {selectPlay, randomPlay} from 'store/action'
 
 import './musicList.styl'
 
@@ -54,7 +54,9 @@ class MusicList extends React.Component {
   }
 
   random() {
-
+    this.props.randomPlay({
+      list: this.props.songs
+    })
   }
 
   onScroll(scroll) {
@@ -137,6 +139,6 @@ class MusicList extends React.Component {
   }
 }
 
-MusicList = connect(null, {selectPlay})(withRouter(MusicList))
+MusicList = connect(null, {selectPlay, randomPlay})(withRouter(MusicList))
 
 export default MusicList

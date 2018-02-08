@@ -1,4 +1,6 @@
 import * as actions from './action-creator'
+import {playMode} from 'common/js/config'
+import {shuffle} from 'common/js/util'
 
 export function setDisc(data) {
   return dispatch => {
@@ -13,13 +15,24 @@ export function setSinger(data) {
 }
 
 export function selectPlay({list, index}) {
-  const currentSong = list[index]
   return dispatch => {
     dispatch(actions.set_playList(list))
     dispatch(actions.set_sequenceList(list))
     dispatch(actions.set_currentIndex(index))
     dispatch(actions.set_fullScreen(true))
     dispatch(actions.set_playing(true))
-    dispatch(actions.set_currentSong(currentSong))
+  }
+}
+
+
+export function randomPlay({list}) {
+  let randomList = shuffle(list)
+  return dispatch => {
+    dispatch(actions.set_playMode(playMode.random))
+    dispatch(actions.set_sequenceList(list))
+    dispatch(actions.set_playList(randomList))
+    dispatch(actions.set_currentIndex(0))
+    dispatch(actions.set_fullScreen(true))
+    dispatch(actions.set_playing(true))
   }
 }
