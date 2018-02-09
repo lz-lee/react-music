@@ -42,6 +42,7 @@ class Player extends React.Component{
       isPureMusic: false,
       pureMusicLyric: ''
     }
+    this.touch = {}
     this.ready = this.ready.bind(this)
     this.error = this.error.bind(this)
     this.updateTime = this.updateTime.bind(this)
@@ -55,6 +56,10 @@ class Player extends React.Component{
     this.handlePercentChangeEnd = this.handlePercentChangeEnd.bind(this)
     this.handlePercentChanging = this.handlePercentChanging.bind(this)
     this.changeMode = this.changeMode.bind(this)
+    this.handleLyric = this.handleLyric.bind(this)
+    this.touchStart = this.touchStart.bind(this)
+    this.touchMove = this.touchMove.bind(this)
+    this.touchEnd = this.touchEnd.bind(this)
   }
 
   static propTypes = {
@@ -90,7 +95,7 @@ class Player extends React.Component{
       })
     }
     this.refs.audio.src = nextSong.url
-    // 
+    //
     setTimeout(() => {
       this.refs.audio.play()
     }, 20)
@@ -102,7 +107,7 @@ class Player extends React.Component{
     }, 5000)
     this.getLyric(nextSong)
   }
-  
+
   watchPlaying(nextProps) {
     if (!this.state.songReady) {
       return false
@@ -120,6 +125,7 @@ class Player extends React.Component{
         return
       }
       const currentLyric = new Lyric(lyric, this.handleLyric)
+      console.log(currentLyric)
       this.setState({
         currentLyric,
         isPureMusic: !currentLyric.lines.length
@@ -136,7 +142,6 @@ class Player extends React.Component{
           }
         }
       })
-      console.log(this.state)
     }).catch(() => {
       this.setState({
         currentLyric: null,
@@ -147,12 +152,12 @@ class Player extends React.Component{
   }
 
   handleLyric({lineNum, txt}) {
-    console.log(this.state.currentLyric)
-    if (!this.refs.lyricLine && !this.state.currentLyric) {
+    // 根据子元素的长度判断，注意绑定this
+    if (!this.refs.lyricLines.children.length) {
       return
     }
     if (lineNum > 5) {
-      let lineEl = this.refs.lyricLine[lineNum - 5]
+      let lineEl = this.refs.lyricLines.children[lineNum - 5]
       this.refs.lyricList.scrollToElement(lineEl, 1000)
     } else {
       this.refs.lyricList.scrollTo(0, 0, 1000)
@@ -161,6 +166,72 @@ class Player extends React.Component{
       currentLineNum: lineNum,
       playingLyric: txt
     })
+  }
+
+  touchStart(e) {
+    const touch = e.touches[0]
+    this.touch.init = true
+    // 是否为一次移动
+    this.touch.moved = false
+    this.touch.startX = touch.pageX
+    this.touch.startY = touch.pageY
+  }
+
+  touchMove(e) {
+    if (!this.touch.init) return
+    const touch = e.touches[0]
+    const deltaX = touch.pageX - this.touch.startX
+    const deltaY = touch.pageY - this.touch.startY
+    // 表示向下滑动
+    if (Math.abs(deltaY) > Math.abs(deltaX)) return
+    if (!this.touch.moved) {
+      this.touch.moved = true
+    }
+    // A为常量，Math.min(A, X) ==> X 小于等于(不大于) A, A为最大值
+    // Math.max(A, X) ==> X 大于等于(不小于) A, A为最小值
+    const left = this.state.currentShow === 'cd' ? 0 : -window.innerWidth
+    // -window.innderWidth <= offsetWidth <= 0
+    const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+    this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
+    this.refs.lyricList.refs.scrollWrapper.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
+    this.refs.lyricList.refs.scrollWrapper.style[transitionDuration] = 0
+    this.refs.middleL.style.opacity = 1 - this.touch.percent
+    this.refs.middleL.style[transitionDuration] = 0
+  }
+
+  touchEnd() {
+    if (!this.touch.moved) return
+    let offsetWidth
+    let opacity
+    if (this.state.currentShow === 'cd') {
+      if (this.touch.percent > 0.1) {
+        offsetWidth = -window.innerWidth
+        opacity = 0
+        this.setState({
+          currentShow: 'lyric'
+        })
+      } else {
+        offsetWidth = 0
+        opacity = 1
+      }
+    } else {
+      if (this.touch.percent < 0.9) {
+        offsetWidth = 0
+        this.setState({
+          currentShow: 'cd'
+        })
+        opacity = 1
+      } else {
+        offsetWidth = -window.innerWidth
+        opacity = 0
+      }
+    }
+    const time = 300
+    this.refs.lyricList.refs.scrollWrapper.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`
+    this.refs.lyricList.refs.scrollWrapper.style[transitionDuration] = `${time}ms`
+    this.refs.middleL.style.opacity = opacity
+    this.refs.middleL.style[transitionDuration] = `${time}ms`
+    this.touch.init = false
   }
 
   back() {
@@ -398,8 +469,13 @@ class Player extends React.Component{
               <h1 className="title">{currentSong.name}</h1>
               <h2 className="subtitle">{currentSong.singer}</h2>
             </div>
-            <div className="middle">
-              <div className="middle-l">
+            <div
+              className="middle"
+              onTouchStart={this.touchStart}
+              onTouchMove={this.touchMove}
+              onTouchEnd={this.touchEnd}
+              >
+              <div className="middle-l" ref="middleL">
                 <div className="cd-wrapper" ref="cdWrapper">
                   <div className="cd">
                     <img className={"image " + cdCls} src={currentSong.image} alt=""/>
@@ -417,12 +493,11 @@ class Player extends React.Component{
               >
                 <div className="lyric-wrapper">
                   {
-                    this.state.currentLyric ? 
-                    <div>
+                    this.state.currentLyric ?
+                    <div ref="lyricLines">
                       {
                         this.state.currentLyric.lines.map((v, i) =>
-                          <p 
-                            ref="lyricLine"
+                          <p
                             key={v.time}
                             className={'text ' + (this.state.currentLineNum === i ? 'current' : '')}
                           >
@@ -443,8 +518,8 @@ class Player extends React.Component{
             </div>
             <div className="bottom">
               <div className="dot-wrapper">
-                <span className="dot"></span>
-                <span className="dot"></span>
+                <span className={'dot ' + (this.state.currentShow === 'cd' ? 'active' : '')}></span>
+                <span className={'dot ' + (this.state.currentShow === 'lyric' ? 'active' : '')}></span>
               </div>
               <div className="progress-wrapper">
                 <span className="time time-l">{this.format(this.state.currentTime)}</span>
@@ -474,7 +549,7 @@ class Player extends React.Component{
           </div>
         </CSSTransition>
         {
-          !fullScreen && currentIndex > -1 ? 
+          !fullScreen && currentIndex > -1 ?
           <div className="mini-player" onClick={() => this.open()}>
             <div className="icon">
               <div className="imgWrapper">
