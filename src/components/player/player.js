@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import animations from 'create-keyframe-animation'
 import { CSSTransition } from 'react-transition-group'
+import Lyric from 'lyric-parser'
 
 import Scroll from 'base/scroll/scroll'
 import ProgressBar from 'base/progressBar/progressBar'
@@ -79,6 +80,15 @@ class Player extends React.Component{
     this.setState({
       songReady: false
     })
+    this.canLyricPlay = false
+    if (this.state.currentLyric) {
+      this.state.currentLyric.stop()
+      this.setState({
+        currentLyric: null,
+        playingLyric: '',
+        currentLineNum: 0
+      })
+    }
     this.refs.audio.src = nextSong.url
     // 
     setTimeout(() => {
@@ -90,6 +100,7 @@ class Player extends React.Component{
         songReady: true
       })
     }, 5000)
+    this.getLyric(nextSong)
   }
   
   watchPlaying(nextProps) {
@@ -101,6 +112,55 @@ class Player extends React.Component{
     setTimeout(() => {
       newPlaying ? audio.play() : audio.pause()
     } ,20)
+  }
+
+  getLyric(nextSong) {
+    nextSong.getLyric().then((lyric) => {
+      if (nextSong.lyric !== lyric) {
+        return
+      }
+      const currentLyric = new Lyric(lyric, this.handleLyric)
+      this.setState({
+        currentLyric,
+        isPureMusic: !currentLyric.lines.length
+      }, () => {
+        if (this.state.isPureMusic) {
+          const pureMusicLyric = this.state.currentLyric.lrc.replace(timeExp, '').trim()
+          this.setState({
+            pureMusicLyric,
+            playingLyric: pureMusicLyric
+          })
+        } else {
+          if (this.props.playing && this.canLyricPlay) {
+            this.state.currentLyric.seek(this.state.currentTime * 1000)
+          }
+        }
+      })
+      console.log(this.state)
+    }).catch(() => {
+      this.setState({
+        currentLyric: null,
+        playingLyric: '',
+        currentLineNum: 0
+      })
+    })
+  }
+
+  handleLyric({lineNum, txt}) {
+    console.log(this.state.currentLyric)
+    if (!this.refs.lyricLine && !this.state.currentLyric) {
+      return
+    }
+    if (lineNum > 5) {
+      let lineEl = this.refs.lyricLine[lineNum - 5]
+      this.refs.lyricList.scrollToElement(lineEl, 1000)
+    } else {
+      this.refs.lyricList.scrollTo(0, 0, 1000)
+    }
+    this.setState({
+      currentLineNum: lineNum,
+      playingLyric: txt
+    })
   }
 
   back() {
@@ -166,6 +226,7 @@ class Player extends React.Component{
       x, y, scale
     }
   }
+
   loop() {
     this.refs.audio.currentTime = 0
     this.refs.audio.play()
@@ -217,6 +278,7 @@ class Player extends React.Component{
     this.setState({
       songReady: true
     })
+    this.canLyricPlay = true
   }
 
   error() {
@@ -348,15 +410,32 @@ class Player extends React.Component{
                 </div>
               </div>
               <Scroll
-                className="lyric-wrapper"
+                className="middle-r"
                 probeType={3}
-                
+                ref="lyricList"
+                data={this.state.currentLyric && this.state.currentLyric.lines}
               >
                 <div className="lyric-wrapper">
                   {
                     this.state.currentLyric ? 
                     <div>
-                      
+                      {
+                        this.state.currentLyric.lines.map((v, i) =>
+                          <p 
+                            ref="lyricLine"
+                            key={v.time}
+                            className={'text ' + (this.state.currentLineNum === i ? 'current' : '')}
+                          >
+                            {v.txt}
+                          </p>
+                        )
+                      }
+                    </div> : null
+                  }
+                  {
+                    this.state.isPureMusic ?
+                    <div className="pure-music">
+                      <p>{this.state.pureMusicLyric}</p>
                     </div> : null
                   }
                 </div>
