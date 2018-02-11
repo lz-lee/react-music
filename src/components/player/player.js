@@ -86,6 +86,7 @@ class Player extends React.Component{
       songReady: false
     })
     this.canLyricPlay = false
+    // 切换歌曲，重置歌词数据
     if (this.state.currentLyric) {
       this.state.currentLyric.stop()
       this.setState({
@@ -204,6 +205,7 @@ class Player extends React.Component{
     let offsetWidth
     let opacity
     if (this.state.currentShow === 'cd') {
+      // 从右往左滑大于10%
       if (this.touch.percent > 0.1) {
         offsetWidth = -window.innerWidth
         opacity = 0
@@ -215,12 +217,13 @@ class Player extends React.Component{
         opacity = 1
       }
     } else {
+      // 从左到右滑大于10%
       if (this.touch.percent < 0.9) {
         offsetWidth = 0
+        opacity = 1
         this.setState({
           currentShow: 'cd'
         })
-        opacity = 1
       } else {
         offsetWidth = -window.innerWidth
         opacity = 0
@@ -303,7 +306,7 @@ class Player extends React.Component{
     this.refs.audio.play()
     this.props.set_playing(true)
     if (this.state.currentLyric) {
-      this.currentLyric.seek(0)
+      this.state.currentLyric.seek(0)
     }
   }
 
@@ -376,7 +379,10 @@ class Player extends React.Component{
   }
 
   paused() {
-
+    this.props.set_playing(false)
+    if (this.state.currentLyric) {
+      this.state.currentLyric.stop()
+    }
   }
 
   handlePercentChanging() {
@@ -389,6 +395,9 @@ class Player extends React.Component{
       currentTime
     })
     this.refs.audio.currentTime = currentTime
+    if (this.state.currentLyric) {
+      this.state.currentLyric.seek(currentTime * 1000)
+    }
     if (!this.props.playing) {
       this.togglePlaying()
     }
@@ -400,6 +409,9 @@ class Player extends React.Component{
     }
     if (!this.state.songReady) return
     this.props.set_playing(!this.props.playing)
+    if (this.state.currentLyric) {
+      this.state.currentLyric.togglePlay()
+    }
   }
 
   changeMode() {

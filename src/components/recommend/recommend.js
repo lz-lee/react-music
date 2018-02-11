@@ -11,6 +11,7 @@ import Swiper from 'swiper'
 
 import LazyLoadComponent from 'common/js/lazyLoad'
 import LazyLoad, {forceCheck} from 'react-lazyload'
+import {playListHoc} from 'common/js/mixin'
 
 import {setDisc} from 'store/action'
 
