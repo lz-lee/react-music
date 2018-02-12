@@ -15,7 +15,6 @@ export default class Scroll extends Component{
     probeType: PropTypes.number,
     click: PropTypes.bool,
     beforeScroll: PropTypes.bool,
-    pullUp: PropTypes.bool,
     onScroll: PropTypes.func,
     scrollToEnd: PropTypes.func,
     onBeforeScroll: PropTypes.func,
@@ -26,7 +25,6 @@ export default class Scroll extends Component{
     probeType: 1,
     click: true,
     beforeScroll: false,
-    pullUp: false,
     onScroll: null,
     scrollToEnd: null,
     onBeforeScroll: null,
@@ -38,14 +36,13 @@ export default class Scroll extends Component{
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(Object.is(this.props.data, nextProps.data))
     if (this.props.data !== nextProps.data) {
       setTimeout(() => {
         this.refresh()
       }, 20)
     }
   }
-  
+
   componentWillUnmount() {
     this.scroll.off('scroll')
     this.scroll = null
@@ -86,7 +83,7 @@ export default class Scroll extends Component{
       })
     }
 
-    if (this.props.pullup) {
+    if (this.props.scrollToEnd) {
       this.scroll.on('scrollEnd', () => {
         if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
           this.props.scrollToEnd()

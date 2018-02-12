@@ -14,18 +14,21 @@ class SearchBox extends React.Component {
   }
 
   static propTypes = {
-    placeHolder: PropTypes.string
+    placeHolder: PropTypes.string,
+    onInput: PropTypes.func
   }
 
   static defaultProps = {
-    placeHolder: '搜索歌曲、歌手'
+    placeHolder: '搜索歌曲、歌手',
+    onInput: null
   }
 
   onInput(e) {
     const query = e.target.value
     this.setState({
-      query
+      query: query.trim()
     })
+    this.props.onInput(query)
   }
 
   clear() {
@@ -33,13 +36,16 @@ class SearchBox extends React.Component {
       query: ''
     })
     this.refs.query.value = ''
+    this.props.onInput()
   }
 
   setQuery(query) {
     this.setState({
-      query
+      query: query.trim()
     })
     this.refs.query.value = query
+    // 关于query的操作都在该组件里
+    this.props.onInput(query)
   }
 
   render() {
