@@ -39,3 +39,8 @@ export const set_currentIndex = index => ({
   type: types.SET_CURRENT_INDEX,
   payload: index
 })
+
+export const setTopList = item => ({
+  type: types.SET_TOP_LIST,
+  payload: item
+})

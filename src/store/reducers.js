@@ -66,3 +66,15 @@ export function player(state = initState.player, action) {
       return state
   }
 }
+
+export function topList(state = initState.topList, action) {
+  switch (action.type) {
+    case types.SET_TOP_LIST:
+      return {
+        ...state,
+        ...action.payload
+      }
+    default:
+      return state
+  }
+}

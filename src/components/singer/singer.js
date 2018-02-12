@@ -31,6 +31,12 @@ class Singer extends Component{
     this._getSignerList()  
   }
 
+  componentWillReceiveProps(nextProps) {
+    const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
+    this.refs.singer.style.bottom = bottom
+    this.refs.list.refresh()
+  }
+  
   _getSignerList() {
     getSingerList().then((res) => {
       if (res.code === ERR_OK) {
@@ -97,12 +103,12 @@ class Singer extends Component{
     let {match} = this.props
     return(
       <div className="singer-wrapper" ref="singer">
-        <ListView data={this.state.singers} selectItem={this.selectSinger}></ListView>
+        <ListView data={this.state.singers} selectItem={this.selectSinger} ref="list"></ListView>
         <Route path={`${match.url}/:id`} component={SingerDetail}></Route>
       </div>
     )
   }
 }
 
-Singer = connect(null, {setSinger})(Singer)
+Singer = connect(state => state, {setSinger})(Singer)
 export default Singer

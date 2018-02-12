@@ -58,13 +58,12 @@ class Recommend extends Component{
     })
   }
 
-  componentWillUpdate (nextProps, nextState) {
-    console.log('will update')
+  componentWillReceiveProps(nextProps) {
+    const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
+    this.refs.recommends.style.bottom = bottom
+    this.refs.list.refresh()
   }
   
-  componentDidUpdate(prevProps, prevState) {
-    console.log('did update')
-  }
 
   selectAlbum(v) {
     const {match} = this.props
@@ -76,8 +75,9 @@ class Recommend extends Component{
   render() {
     let {match} = this.props
     return(
-      <div className="recommend-wrapper">
+      <div className="recommend-wrapper" ref="recommends">
         <Scroll
+          ref="list"
           probeType={3}
           data={this.state.discList}
           onScroll={() => forceCheck()}>

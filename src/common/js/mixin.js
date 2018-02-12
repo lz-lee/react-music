@@ -7,10 +7,6 @@ export const playListHoc = (wrapperComponent) => {
       this.state = {}
     }
 
-    componentDidMount() {
-      console.log('hoc mouted')  
-    }
-
     render() {
       return (
         <wrapperComponent {...this.props}/>

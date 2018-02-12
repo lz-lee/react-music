@@ -29,6 +29,7 @@ export default class ListView extends React.Component {
     this._scrollTo = this._scrollTo.bind(this)
     this._getCurrentIndex = this._getCurrentIndex.bind(this)
     this._getDiff = this._getDiff.bind(this)
+    this.refresh = this.refresh.bind(this)
   }
 
   static propTypes = {
@@ -43,14 +44,14 @@ export default class ListView extends React.Component {
     selectItem: null
   }
   
-  componentWillMount () {
+  /*componentWillMount () {
     console.log('will mount')
   }
   
   componentDidMount() {
     console.log(this.props.data.length)
     console.log('did mount')
-  }
+  }*/
 
   componentWillReceiveProps(nextProps) {
     console.log('will receive props')
@@ -121,6 +122,10 @@ export default class ListView extends React.Component {
       scrollY: pos.y
     })
     forceCheck()
+  }
+
+  refresh() {
+    this.refs.listview.refresh()
   }
 
   _getCurrentIndex(newProps, newState) {

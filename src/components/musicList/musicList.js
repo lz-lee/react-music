@@ -91,7 +91,13 @@ class MusicList extends React.Component {
   componentDidMount() {
     this.imageHeight = this.refs.bgImage.clientHeight
     this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
-    this.refs.list.style.top = `${this.imageHeight}px`
+    this.refs.list.refs.scrollWrapper.style.top = `${this.imageHeight}px`
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
+    this.refs.list.refs.scrollWrapper.style.bottom = bottom
+    this.refs.list.refresh()
   }
   
   render() {
@@ -118,27 +124,25 @@ class MusicList extends React.Component {
             <div className="filter" ref="filter"></div>
         </div>
         <div className="bg-layer" ref="layer"></div>
-        <div
+        <Scroll
+          className="list"
           ref="list"
-          className="list">
-          <Scroll
-            probeType={3}
-            data={this.props.songs}
-            onScroll={this.onScroll}
-          >
-            <div className="song-list-wrapper">
-              {
-                <SongList songs={this.props.songs} rank={this.props.rank} select={this.selectSong}></SongList>
-              }
-            </div>
-            {!this.props.songs.length ? <Loading></Loading> : null}
-          </Scroll>
-        </div>
+          probeType={3}
+          data={this.props.songs}
+          onScroll={this.onScroll}
+        >
+          <div className="song-list-wrapper">
+            {
+              <SongList songs={this.props.songs} rank={this.props.rank} select={this.selectSong}></SongList>
+            }
+          </div>
+          {!this.props.songs.length ? <Loading></Loading> : null}
+        </Scroll>
       </div>
     )
   }
 }
 
-MusicList = connect(null, {selectPlay, randomPlay})(withRouter(MusicList))
+MusicList = connect(state => state, {selectPlay, randomPlay})(withRouter(MusicList))
 
 export default MusicList

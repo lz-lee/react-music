@@ -126,7 +126,6 @@ class Player extends React.Component{
         return
       }
       const currentLyric = new Lyric(lyric, this.handleLyric)
-      console.log(currentLyric)
       this.setState({
         currentLyric,
         isPureMusic: !currentLyric.lines.length
