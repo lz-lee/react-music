@@ -5,6 +5,8 @@ import {connect} from 'react-redux'
 import {search} from 'api/search'
 import Scroll from 'base/scroll/scroll'
 import Loading from 'base/loading/loading'
+import NoResult from 'base/noResult/noResult'
+
 import { createSong, isValidMusic } from 'common/js/song'
 import { ERR_OK } from 'api/config'
 
@@ -140,6 +142,7 @@ class Suggest extends React.Component {
         probeType={3}
         data={this.state.result}
         scrollToEnd={this.searchMore}
+        onBeforeScroll={this.props.onBeforeScroll}
         >
         <ul className="suggest-list">
           {
@@ -161,6 +164,9 @@ class Suggest extends React.Component {
             {this.state.hasMore ? <Loading title=""></Loading> : null}
           </div>
         </ul>
+        <div className="no-result-wrapper">
+          { !this.state.hasMore && !this.state.result.length ? <NoResult title="抱歉，暂无搜索结果"></NoResult> : null}
+        </div>
       </Scroll>
     )
   }

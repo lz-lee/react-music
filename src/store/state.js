@@ -12,6 +12,7 @@ const state = {
     currentIndex: -1,
     currentSong: {}
   },
-  topList: {}
+  topList: {},
+  searchHistory: []
 }
 export default state 

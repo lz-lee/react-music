@@ -14,7 +14,6 @@ export default class Scroll extends Component{
     data: PropTypes.array,
     probeType: PropTypes.number,
     click: PropTypes.bool,
-    beforeScroll: PropTypes.bool,
     onScroll: PropTypes.func,
     scrollToEnd: PropTypes.func,
     onBeforeScroll: PropTypes.func,
@@ -24,7 +23,6 @@ export default class Scroll extends Component{
     data: null,
     probeType: 1,
     click: true,
-    beforeScroll: false,
     onScroll: null,
     scrollToEnd: null,
     onBeforeScroll: null,
@@ -91,7 +89,7 @@ export default class Scroll extends Component{
       })
     }
 
-    if (this.props.beforeScroll) {
+    if (this.props.onBeforeScroll) {
       this.scroll.on('beforeScrollStart', () => {
         this.props.onBeforeScroll()
       })

@@ -39,6 +39,10 @@ class SearchBox extends React.Component {
     this.props.onInput()
   }
 
+  blur() {
+    this.refs.query.blur()
+  }
+
   setQuery(query) {
     this.setState({
       query: query.trim()

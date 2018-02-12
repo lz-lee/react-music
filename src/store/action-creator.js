@@ -44,3 +44,8 @@ export const setTopList = item => ({
   type: types.SET_TOP_LIST,
   payload: item
 })
+
+export const setSearchHistory = list => ({
+  type: types.SET_SEARCH_HISTORY,
+  payload: list
+})

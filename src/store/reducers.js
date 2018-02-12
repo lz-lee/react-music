@@ -78,3 +78,16 @@ export function topList(state = initState.topList, action) {
       return state
   }
 }
+
+
+export function history(state = initState.searchHistory, action) {
+  switch (action.type) {
+    case types.SET_SEARCH_HISTORY:
+      return {
+        ...state,
+        ...action.payload
+      }    
+    default:
+      return state
+  }
+}

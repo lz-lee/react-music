@@ -2,18 +2,22 @@ import React, {Component} from 'react'
 import {Route} from 'react-router-dom'
 import {connect} from 'react-redux'
 
+import LazyLoadComponent from 'common/js/lazyLoad'
+
 import SearchBox from 'base/searchBox/searchBox'
 import Scroll from 'base/scroll/scroll'
 import Suggest from 'components/suggest/suggest'
-import SingerDetail from 'base/singerDetail/singerDetail'
 
 import {getHotKey} from 'api/search.js'
 import Singers from 'common/js/singer'
 import {set_singer} from 'store/action-creator'
+import {insertSong} from 'store/action'
+import {debounce} from 'common/js/util'
 
 import {ERR_OK} from 'api/config'
 import './search.styl'
 
+const SingerDetail = LazyLoadComponent({loader: () => import('base/singerDetail/singerDetail')})
 const TYPE_SINGER = 'singer'
 
 class Search extends Component{
@@ -41,11 +45,11 @@ class Search extends Component{
     this.refs.searchBox.setQuery(query)
   }
 
-  onQueryChange = (query) => {
+  onQueryChange = debounce((query) => {
     this.setState({
       query
     })
-  }
+  }, 300)
 
   selectItem(v) {
     if (v.type === TYPE_SINGER) {
@@ -57,7 +61,13 @@ class Search extends Component{
       const url = `${match.url}/${singer.id}`
       this.props.history.push(url)
       this.props.set_singer(singer)
+    } else {
+      this.props.insertSong(v)
     }
+  }
+
+  blurInput() {
+    this.refs.searchBox.blur()
   }
 
   render() {
@@ -95,6 +105,7 @@ class Search extends Component{
             <Suggest
               selectItem={this.selectItem}
               query={this.state.query}
+              onBeforeScroll={this.blurInput}
               ref="suggest">
 
             </Suggest>
@@ -105,7 +116,7 @@ class Search extends Component{
     )
   }
 }
-export default connect(null, {set_singer})(Search)
+export default connect(null, {set_singer, insertSong})(Search)
                     // {
                     //   this.props.searchHistory.length > 0 ?
                     //   <div className="search-history">
