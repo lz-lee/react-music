@@ -63,13 +63,13 @@ class Recommend extends Component{
     this.refs.recommends.style.bottom = bottom
     this.refs.list.refresh()
   }
-  
+
 
   selectAlbum(v) {
     const {match} = this.props
     const url = `${match.url}/${v.dissid}`
-    this.props.setDisc(v)
     this.props.history.push(url)
+    this.props.setDisc(v)
   }
 
   render() {

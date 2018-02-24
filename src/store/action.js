@@ -1,6 +1,7 @@
 import * as actions from './action-creator'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
+import {saveSearch, deleteSearch, clearSearch} from 'common/js/cache'
 
 export function setDisc(data) {
   return dispatch => {
@@ -89,4 +90,22 @@ function findIndex(list, song) {
   return list.findIndex((item) => {
     return item.id === song.id
   })
+}
+
+export function saveSearchHistory(query) {
+  return dispatch => {
+    dispatch(actions.setSearchHistory(saveSearch(query)))
+  }
+}
+
+export function deleteSearchHistory(query) {
+  return dispatch => {
+    dispatch(actions.setSearchHistory(deleteSearch(query)))
+  }
+}
+
+export function clearSearchHistory(query) {
+  return dispatch => {
+    dispatch(actions.setSearchHistory(clearSearch()))
+  }
 }

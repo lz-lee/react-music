@@ -27,7 +27,7 @@ class Suggest extends React.Component {
     this.searchMore = this.searchMore.bind(this)
   }
 
-  static proptTypes = {
+  static propTypes = {
     query: Proptypes.string,
     showSinger: Proptypes.bool
   }
@@ -35,11 +35,6 @@ class Suggest extends React.Component {
   static defaultProps = {
     query: '',
     showSinger: true
-  }
-
-
-  componentDidMount() {
-    console.log(this.props)
   }
 
   componentWillReceiveProps(nextProps) {

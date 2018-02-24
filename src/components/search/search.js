@@ -7,11 +7,13 @@ import LazyLoadComponent from 'common/js/lazyLoad'
 import SearchBox from 'base/searchBox/searchBox'
 import Scroll from 'base/scroll/scroll'
 import Suggest from 'components/suggest/suggest'
+import SearchList from 'base/searchList/searchList'
+import Confirm from 'base/confirm/confirm'
 
 import {getHotKey} from 'api/search.js'
 import Singers from 'common/js/singer'
 import {set_singer} from 'store/action-creator'
-import {insertSong} from 'store/action'
+import {insertSong, saveSearchHistory, deleteSearchHistory, clearSearchHistory} from 'store/action'
 import {debounce} from 'common/js/util'
 
 import {ERR_OK} from 'api/config'
@@ -28,7 +30,11 @@ class Search extends Component{
       query: '',
       refreshDelay: 120
     }
+
+    this.addQuery = this.addQuery.bind(this)
     this.selectItem = this.selectItem.bind(this)
+    this.blurInput = this.blurInput.bind(this)
+    this.showConfirm = this.showConfirm.bind(this)
   }
 
   componentDidMount() {
@@ -64,21 +70,27 @@ class Search extends Component{
     } else {
       this.props.insertSong(v)
     }
+    this.props.saveSearchHistory(this.state.query)
   }
 
   blurInput() {
     this.refs.searchBox.blur()
   }
 
+  showConfirm() {
+    this.refs.confirm.show()
+  }
+
   render() {
     const {match} = this.props
+    const {searchHistory} = this.props
     return(
       <div className="search-wrapper">
         <div className="search-box-wrapper">
           <SearchBox ref="searchBox" onInput={this.onQueryChange}/>
         </div>
         {
-          <div className="shortcut-wrapper" style={{"display": !this.state.query ?'block' : 'none'}}>
+          <div className="shortcut-wrapper" style={{"display": !this.state.query ? 'block' : 'none'}}>
             <Scroll
               className="shortcut"
               probeType={3}
@@ -96,6 +108,23 @@ class Search extends Component{
                     }
                   </ul>
                 </div>
+                {
+                  searchHistory.length > 0 ?
+                  <div className="search-history">
+                    <h1 className="title">
+                      <span className="text">搜索历史</span>
+                      <span className="clear" onClick={this.showConfirm}>
+                        <i className="icon-clear"></i>
+                      </span>
+                    </h1>
+                    <SearchList
+                      deleteOne={this.props.deleteSearchHistory}
+                      selectItem={this.addQuery}
+                      searches={searchHistory}
+                    ></SearchList>
+                  </div>
+                  : null
+                }
               </div>
             </Scroll>
           </div>
@@ -111,21 +140,15 @@ class Search extends Component{
             </Suggest>
           </div>
         }
+        <Confirm
+          ref="confirm"
+          text="是否清空所有搜索历史"
+          confirmBtnText="清空"
+          confirm={this.props.clearSearchHistory}
+        ></Confirm>
         <Route path={`${match.url}/:id`} component={SingerDetail}></Route>
       </div>
     )
   }
 }
-export default connect(null, {set_singer, insertSong})(Search)
-                    // {
-                    //   this.props.searchHistory.length > 0 ?
-                    //   <div className="search-history">
-                    //     <h1 className="title">
-                    //       <span className="text">搜索历史</span>
-                    //       <span className="clear" onClick={this.showConfirm}>
-                    //         <i className="icon-clear"></i>
-                    //       </span>
-                    //     </h1>
-                    //   </div>
-                    //   : null
-                    // }
+export default connect(state => state, {set_singer, insertSong, saveSearchHistory, deleteSearchHistory, clearSearchHistory})(Search)
