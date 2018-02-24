@@ -58,10 +58,11 @@ class Recommend extends Component{
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  shouldComponentUpdate(nextProps) {
     const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
     this.refs.recommends.style.bottom = bottom
     this.refs.list.refresh()
+    return true
   }
 
 

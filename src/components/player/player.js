@@ -413,6 +413,10 @@ class Player extends React.Component{
     }
   }
 
+  showPlaylist(e) {
+    e.stopPropagation()
+  }
+
   changeMode() {
     const mode = (this.props.mode + 1) % 3
     this.props.set_playMode(mode)
@@ -576,7 +580,7 @@ class Player extends React.Component{
                 <i className={'icon-mini ' + miniIcon} onClick={this.togglePlaying}></i>
               </ProgressCircle>
             </div>
-            <div className="control">
+            <div className="control" onClick={this.showPlaylist}>
               <i className="icon-playlist"></i>
             </div>
           </div> : null

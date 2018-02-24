@@ -1,6 +1,6 @@
 import React from 'react'
 import Proptypes from 'prop-types'
-import {connect} from 'react-redux'
+// import {connect} from 'react-redux'
 
 import {search} from 'api/search'
 import Scroll from 'base/scroll/scroll'
@@ -25,6 +25,7 @@ class Suggest extends React.Component {
     }
     this.search = this.search.bind(this)
     this.searchMore = this.searchMore.bind(this)
+    this.refresh = this.refresh.bind(this)
   }
 
   static propTypes = {
@@ -90,6 +91,10 @@ class Suggest extends React.Component {
         hasMore: false
       })
     }
+  }
+
+  refresh() {
+    this.refs.suggest.refresh()
   }
 
   _genResult(data) {
@@ -167,4 +172,4 @@ class Suggest extends React.Component {
   }
 }
 
-export default connect()(Suggest)
+export default Suggest

@@ -94,10 +94,11 @@ class MusicList extends React.Component {
     this.refs.list.refs.scrollWrapper.style.top = `${this.imageHeight}px`
   }
   
-  componentWillReceiveProps(nextProps) {
+  shouldComponentUpdate(nextProps) {
     const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
     this.refs.list.refs.scrollWrapper.style.bottom = bottom
     this.refs.list.refresh()
+    return true
   }
   
   render() {

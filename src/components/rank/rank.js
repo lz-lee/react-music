@@ -25,10 +25,11 @@ class Rank extends Component{
     this._getTopList()
   }
 
-  componentWillReceiveProps(nextProps) {
+  shouldComponentUpdate(nextProps) {
     const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
     this.refs.rank.style.bottom = bottom
     this.refs.list.refresh()
+    return true
   }
   
   _getTopList() {

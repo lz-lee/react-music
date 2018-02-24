@@ -42,6 +42,8 @@
 
 - 组件中的 `this.props` 与 这两个生命周期中的 `nextProps 、newProps` 是同一个引用
 
+- 与vue不同，vue是diff数据，react是diff的dom，react需要手动set数据，因此在这两个钩子函数里做watch数据相关操作再决定是否重新render
+
 
 #### 4、动画 [react-transition-group](https://reactcommunity.org/react-transition-group/#CSSTransition-prop-onEntered)
 
@@ -82,4 +84,8 @@
 
 #### 5、mixin
 
-- 如何调用被装饰后组件的方法？
+- 如何调用被装饰后的子组件的方法？
+
+    - `search` 组件无法调用被 `connect` 过后的 `suggest` 组件的 `refresh` 方法
+
+

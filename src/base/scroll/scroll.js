@@ -6,9 +6,10 @@ import './scroll.styl'
 export default class Scroll extends Component{
   constructor(props) {
     super(props)
+
     this.refresh = this.refresh.bind(this)
     this.initScroll = this.initScroll.bind(this)
-
+    this.enable = this.enable.bind(this)
   }
   static propTypes = {
     data: PropTypes.array,
@@ -27,6 +28,7 @@ export default class Scroll extends Component{
     scrollToEnd: null,
     onBeforeScroll: null,
   }
+
   componentDidMount() {
     setTimeout(() => {
       this.initScroll()
@@ -40,7 +42,7 @@ export default class Scroll extends Component{
       }, 20)
     }
   }
-
+  
   componentWillUnmount() {
     this.scroll.off('scroll')
     this.scroll = null

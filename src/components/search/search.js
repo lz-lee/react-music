@@ -47,6 +47,17 @@ class Search extends Component{
     })
   }
 
+  shouldComponentUpdate(nextProps) {
+    const bottom = nextProps.player.playList.length > 0 ? '60px' : 0
+    this.refs.searchResult.style.bottom = bottom
+    // console.log(this.refs.suggest)
+    this.refs.suggest.refresh()
+
+    this.refs.shortcutWrapper.style.bottom = bottom
+    this.refs.shortcut.refresh()
+    return true
+  }
+
   addQuery(query) {
     this.refs.searchBox.setQuery(query)
   }
@@ -84,16 +95,19 @@ class Search extends Component{
   render() {
     const {match} = this.props
     const {searchHistory} = this.props
+    let shortcut = this.state.hotKey.concat(searchHistory)
     return(
       <div className="search-wrapper">
         <div className="search-box-wrapper">
           <SearchBox ref="searchBox" onInput={this.onQueryChange}/>
         </div>
         {
-          <div className="shortcut-wrapper" style={{"display": !this.state.query ? 'block' : 'none'}}>
+          <div className="shortcut-wrapper" ref="shortcutWrapper" style={{"display": !this.state.query ? '' : 'none'}}>
             <Scroll
+              ref="shortcut"
               className="shortcut"
               probeType={3}
+              data={shortcut}
             >
               <div>
                 <div className="hot-key">
@@ -130,7 +144,7 @@ class Search extends Component{
           </div>
         }
         {
-          <div className="search-result" ref="searchResult" style={{'display': this.state.query ? 'block' : 'none'}}>
+          <div className="search-result" ref="searchResult" style={{'display': this.state.query ? '' : 'none'}}>
             <Suggest
               selectItem={this.selectItem}
               query={this.state.query}
@@ -151,4 +165,12 @@ class Search extends Component{
     )
   }
 }
-export default connect(state => state, {set_singer, insertSong, saveSearchHistory, deleteSearchHistory, clearSearchHistory})(Search)
+export default connect(
+  state => state,
+  {
+    set_singer,
+    insertSong,
+    saveSearchHistory,
+    deleteSearchHistory,
+    clearSearchHistory
+  })(Search)
