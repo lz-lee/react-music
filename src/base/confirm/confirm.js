@@ -1,8 +1,6 @@
 import React from 'react'
 import Proptypes from 'prop-types'
 
-import { CSSTransition } from 'react-transition-group'
-
 import './confirm.styl'
 export default class Confrim extends React.Component {
 
@@ -48,22 +46,17 @@ export default class Confrim extends React.Component {
 
   render() {
     return (
-      <CSSTransition
-        timeout={200}
-        classNames="confirm-fade"
-      >
-        <div className="confirm" style={{'display': this.state.showFlag ? 'block' : 'none'}}>
-          <div className="confirm-wrapper">
-            <div className="confirm-content">
-              <p className="text">{this.props.text}</p>
-              <div className="operate">
-                <div className="operate-btn left" onClick={() => this.cancel()}>{this.props.cancelBtnText}</div>
-                <div className="operate-btn" onClick={() => this.confirm()}>{this.props.confirmBtnText}</div>
-              </div>
+      <div className={"confirm " + (this.state.showFlag ? 'confirm-fade-enter-active' : '')} style={{'display': !this.state.showFlag ? 'none' : 'block'}}>
+        <div className="confirm-wrapper">
+          <div className="confirm-content">
+            <p className="text">{this.props.text}</p>
+            <div className="operate">
+              <div className="operate-btn left" onClick={() => this.cancel()}>{this.props.cancelBtnText}</div>
+              <div className="operate-btn" onClick={() => this.confirm()}>{this.props.confirmBtnText}</div>
             </div>
           </div>
         </div>
-      </CSSTransition>
+      </div>
     )
   }
 }

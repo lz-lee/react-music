@@ -384,8 +384,14 @@ class Player extends React.Component{
     }
   }
 
-  handlePercentChanging() {
-
+  handlePercentChanging(percent) {
+    const currentTime = this.props.currentSong.duration * percent
+    this.setState({
+      currentTime
+    })
+    if (this.state.currentLyric) {
+      this.state.currentLyric.seek(currentTime * 1000)
+    }
   }
 
   handlePercentChangeEnd(percent) {
