@@ -53,9 +53,29 @@
       &.list-enter-active
         height 40px
         transition height 0.1s
-
     &.list-exit
       height 40px
       &.list-exit-active
         height 0
         transition height 0.1s
+
+.playlist
+  &.list-fade-enter
+    opacity 0
+    .list-wrapper
+      transform translate3d(0, 100%, 0)
+    &.list-fade-enter-active
+      opacity 1
+      transition all 0.3s
+      .list-wrapper
+        transform translate3d(0, 0 0)
+        transition: all 0.3s
+  &.list-fade-exit
+    opacity 1
+    transform translate3d(0, 0 0)
+    &.list-fade-exit-active
+      opacity: 0
+      transition all 0.3s
+    .list-wrapper
+      transform: translate3d(0, 100%, 0)
+      transition all 0.3s

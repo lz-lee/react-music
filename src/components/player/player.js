@@ -9,6 +9,7 @@ import Lyric from 'lyric-parser'
 import Scroll from 'base/scroll/scroll'
 import ProgressBar from 'base/progressBar/progressBar'
 import ProgressCircle from 'base/progressCircle/progressCircle'
+import PlayList from 'components/playList/playList'
 
 import {
   set_fullScreen,
@@ -421,6 +422,7 @@ class Player extends React.Component{
 
   showPlaylist(e) {
     e.stopPropagation()
+    this.refs.playList.show()
   }
 
   changeMode() {
@@ -591,6 +593,7 @@ class Player extends React.Component{
             </div>
           </div> : null
         }
+        <PlayList ref="playList"></PlayList>
         <audio ref="audio" onPlaying={this.ready} onError={this.error} onTimeUpdate={this.updateTime} onEnded={this.end} onPause={this.paused} src={currentSong.url}></audio>
       </div>
     )
