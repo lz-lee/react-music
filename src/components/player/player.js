@@ -61,6 +61,7 @@ class Player extends React.Component{
     this.touchStart = this.touchStart.bind(this)
     this.touchMove = this.touchMove.bind(this)
     this.touchEnd = this.touchEnd.bind(this)
+    this.showPlaylist = this.showPlaylist.bind(this)
   }
 
   static propTypes = {
@@ -422,7 +423,9 @@ class Player extends React.Component{
 
   showPlaylist(e) {
     e.stopPropagation()
-    this.refs.playList.show()
+    console.log(this.refs.playList)
+    let playListInstance = this.refs.playList.getWrappedInstance()
+    playListInstance.show()
   }
 
   changeMode() {
