@@ -86,10 +86,31 @@ export function insertSong(song) {
   }
 }
 
-function findIndex(list, song) {
-  return list.findIndex((item) => {
-    return item.id === song.id
-  })
+export function deleteSong(song) {
+  return (dispatch, getState) => {
+    let state = getState().player
+    let playList = state.playList.slice()
+    let sequenceList = state.sequenceList.slice()
+    let currentIndex = state.currentIndex
+
+    let fIndex = findIndex(playList, song)
+    playList.splice(fIndex, 1)
+    let fsIndex = findIndex(sequenceList, song)
+    sequenceList.splice(fsIndex, 1)
+
+    if (currentIndex > fIndex || currentIndex === playList.length) {
+      currentIndex--
+    }
+    dispatch(actions.set_playList(playList))
+    dispatch(actions.set_sequenceList(sequenceList))
+    dispatch(actions.set_currentIndex(currentIndex))
+
+    if (!playList.length) {
+      dispatch(actions.set_playing(false))
+    } else {
+      dispatch(actions.set_playing(true))
+    }
+  }
 }
 
 export function saveSearchHistory(query) {
@@ -108,4 +129,11 @@ export function clearSearchHistory(query) {
   return dispatch => {
     dispatch(actions.setSearchHistory(clearSearch()))
   }
+}
+
+
+function findIndex(list, song) {
+  return list.findIndex((item) => {
+    return item.id === song.id
+  })
 }

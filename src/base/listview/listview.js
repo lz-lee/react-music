@@ -85,13 +85,13 @@ export default class ListView extends React.Component {
     return true
   }
 
-  componentWillUpdate (nextProps, nextState) {
-    console.log('will update')
-  }
+  // componentWillUpdate (nextProps, nextState) {
+  //   console.log('will update')
+  // }
   
-  componentDidUpdate(prevProps, prevState) {
-    console.log('did update')
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('did update')
+  // }
   
   onShortcutTouchStart(e) {
     // e.stopPropagation()

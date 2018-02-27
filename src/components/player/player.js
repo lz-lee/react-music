@@ -81,7 +81,7 @@ class Player extends React.Component{
   watchCurrentSong(nextProps) {
     const nextSong = nextProps.currentSong
     const oldSong = this.props.currentSong
-    if (!nextSong.id || !nextSong.url || nextSong.id === oldSong.id) {
+    if (!nextSong || !nextSong.id || !nextSong.url || nextSong.id === oldSong.id) {
       return false
     }
     this.setState({
@@ -423,7 +423,6 @@ class Player extends React.Component{
 
   showPlaylist(e) {
     e.stopPropagation()
-    console.log(this.refs.playList)
     let playListInstance = this.refs.playList.getWrappedInstance()
     playListInstance.show()
   }
@@ -472,7 +471,7 @@ class Player extends React.Component{
     const modeIcon = mode === playMode.sequence ? 'icon-sequence' : mode === playMode.loop ? 'icon-loop' : 'icon-random'
     const cdCls = playing ? 'play' : 'play pause'
     const disableCls = this.state.songReady ? '' : 'disable'
-    let percent = this.state.currentTime / currentSong.duration
+    let percent = currentSong && (this.state.currentTime / currentSong.duration)
     return (
       <div className="player">
         <CSSTransition
