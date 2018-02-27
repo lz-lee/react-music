@@ -13,8 +13,9 @@ import Confirm from 'base/confirm/confirm'
 import {getHotKey} from 'api/search.js'
 import Singers from 'common/js/singer'
 import {set_singer} from 'store/action-creator'
-import {insertSong, saveSearchHistory, deleteSearchHistory, clearSearchHistory} from 'store/action'
-import {debounce} from 'common/js/util'
+import {insertSong, clearSearchHistory} from 'store/action'
+
+import {searchHoc} from 'common/js/mixin'
 
 import {ERR_OK} from 'api/config'
 import './search.styl'
@@ -27,13 +28,9 @@ class Search extends Component{
     super(props)
     this.state = {
       hotKey: [],
-      query: '',
       refreshDelay: 120
     }
-
-    this.addQuery = this.addQuery.bind(this)
     this.selectItem = this.selectItem.bind(this)
-    this.blurInput = this.blurInput.bind(this)
     this.showConfirm = this.showConfirm.bind(this)
   }
 
@@ -58,16 +55,6 @@ class Search extends Component{
     return true
   }
 
-  addQuery(query) {
-    this.refs.searchBox.setQuery(query)
-  }
-
-  onQueryChange = debounce((query) => {
-    this.setState({
-      query
-    })
-  }, 300)
-
   selectItem(v) {
     if (v.type === TYPE_SINGER) {
       const singer = new Singers({
@@ -81,11 +68,7 @@ class Search extends Component{
     } else {
       this.props.insertSong(v)
     }
-    this.props.saveSearchHistory(this.state.query)
-  }
-
-  blurInput() {
-    this.refs.searchBox.blur()
+    this.props.saveSearch()
   }
 
   showConfirm() {
@@ -94,20 +77,21 @@ class Search extends Component{
 
   render() {
     const {match} = this.props
-    const {searchHistory} = this.props
+    const {searchHistory, query} = this.props
     let shortcut = this.state.hotKey.concat(searchHistory)
     return(
       <div className="search-wrapper">
         <div className="search-box-wrapper">
-          <SearchBox ref="searchBox" onInput={this.onQueryChange}/>
+          <SearchBox ref={this.props.searchRef} onInput={this.props.onQueryChange}/>
         </div>
         {
-          <div className="shortcut-wrapper" ref="shortcutWrapper" style={{"display": !this.state.query ? '' : 'none'}}>
+          <div className="shortcut-wrapper" ref="shortcutWrapper" style={{"display": !query ? '' : 'none'}}>
             <Scroll
               ref="shortcut"
               className="shortcut"
               probeType={3}
               data={shortcut}
+              refreshDelay={this.state.refreshDelay}
             >
               <div>
                 <div className="hot-key">
@@ -115,7 +99,7 @@ class Search extends Component{
                   <ul>
                     {
                       this.state.hotKey.map(v =>
-                        <li className="item" key={v.k} onClick={() => this.addQuery(v.k)}>
+                        <li className="item" key={v.k} onClick={() => this.props.addQuery(v.k)}>
                           <span>{v.k}</span>
                         </li>
                       )
@@ -133,7 +117,7 @@ class Search extends Component{
                     </h1>
                     <SearchList
                       deleteOne={this.props.deleteSearchHistory}
-                      selectItem={this.addQuery}
+                      selectItem={this.props.addQuery}
                       searches={searchHistory}
                     ></SearchList>
                   </div>
@@ -144,11 +128,11 @@ class Search extends Component{
           </div>
         }
         {
-          <div className="search-result" ref="searchResult" style={{'display': this.state.query ? '' : 'none'}}>
+          <div className="search-result" ref="searchResult" style={{'display': query ? '' : 'none'}}>
             <Suggest
               selectItem={this.selectItem}
-              query={this.state.query}
-              onBeforeScroll={this.blurInput}
+              query={this.props.query}
+              onBeforeScroll={this.props.blurInput}
               ref="suggest">
 
             </Suggest>
@@ -165,12 +149,9 @@ class Search extends Component{
     )
   }
 }
-export default connect(
-  state => state,
+export default searchHoc(connect(null,
   {
     set_singer,
     insertSong,
-    saveSearchHistory,
-    deleteSearchHistory,
     clearSearchHistory
-  })(Search)
+  })(Search))

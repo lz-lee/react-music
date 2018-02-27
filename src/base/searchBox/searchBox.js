@@ -28,6 +28,7 @@ class SearchBox extends React.Component {
     this.setState({
       query: query.trim()
     })
+    console.log(this.props)
     this.props.onInput(query)
   }
 

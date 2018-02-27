@@ -8,8 +8,10 @@ import {
   set_playList
 } from 'store/action-creator'
 
+import {saveSearchHistory, deleteSearchHistory} from 'store/action'
+
 import {playMode} from 'common/js/config'
-import {shuffle} from 'common/js/util'
+import {shuffle, debounce} from 'common/js/util'
 
 export const playListHoc = (WrapperComponent) => {
   class PlayHoc extends React.Component {
@@ -64,4 +66,57 @@ export const playListHoc = (WrapperComponent) => {
     set_playMode,
     set_playList
   }, null, {withRef: true})(PlayHoc)
+}
+
+export const searchHoc = (WrapperComponent) => {
+  class SearchHoc extends React.Component {
+    constructor(props) {
+      super(props)
+      this.state ={
+        query: ''
+      }
+      this.addQuery = this.addQuery.bind(this)
+      this.blurInput = this.blurInput.bind(this)
+      this.saveSearch = this.saveSearch.bind(this)
+    }
+
+    onQueryChange = debounce((query) => {
+      this.setState({
+        query
+      })
+    }, 300)
+
+    blurInput() {
+      console.log(this.searchBox)
+      this.searchBox.blur()
+    }
+
+    addQuery(query) {
+      this.searchBox.setQuery(query)
+    }
+
+    saveSearch() {
+      this.props.saveSearchHistory(this.state.query)
+    }
+
+    render() {
+      
+      let props = {
+        ...this.props,
+        query: this.state.query
+      }
+
+      return (
+        <WrapperComponent
+          {...props}
+          onQueryChange={this.onQueryChange}
+          saveSearch={this.saveSearch}
+          blurInput={this.blurInput}
+          addQuery={this.addQuery}
+          searchRef={el => this.searchBox = el}
+          ></WrapperComponent>
+      )
+    }
+  }
+  return connect(state => state, {saveSearchHistory, deleteSearchHistory})(SearchHoc)
 }

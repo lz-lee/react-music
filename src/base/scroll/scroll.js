@@ -18,6 +18,7 @@ export default class Scroll extends Component{
     onScroll: PropTypes.func,
     scrollToEnd: PropTypes.func,
     onBeforeScroll: PropTypes.func,
+    refreshDelay: PropTypes.number
   }
 
   static defaultProps = {
@@ -27,6 +28,7 @@ export default class Scroll extends Component{
     onScroll: null,
     scrollToEnd: null,
     onBeforeScroll: null,
+    refreshDelay: 20
   }
 
   componentDidMount() {
@@ -39,7 +41,7 @@ export default class Scroll extends Component{
     if (this.props.data !== nextProps.data) {
       setTimeout(() => {
         this.refresh()
-      }, 20)
+      }, this.props.refreshDelay)
     }
   }
   

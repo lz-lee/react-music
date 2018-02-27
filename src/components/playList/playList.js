@@ -19,7 +19,8 @@ class PlayList extends React.Component{
     super(props)
     this.state = {
       showFlag: false,
-      showAddSong: false
+      showAddSong: false,
+      refreshDelay: 120
     }
     this.show = this.show.bind(this)
     this.hide = this.hide.bind(this)
@@ -149,6 +150,7 @@ class PlayList extends React.Component{
               className="list-content"
               probeType={3}
               data={sequenceList}
+              refreshDelay={this.state.refreshDelay}
             >
               <div ref="listGroup">
                 <TransitionGroup>

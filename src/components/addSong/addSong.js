@@ -10,15 +10,20 @@ import Switch from 'base/switch/switch'
 import Scroll from 'base/scroll/scroll'
 import SongList from 'base/songlist/songlist'
 import SearchList from 'base/searchList/searchList'
+import TopTip from 'base/topTip/topTip'
 
-import {debounce} from 'common/js/util'
+import {Song} from 'common/js/song'
+
+import {insertSong} from 'store/action'
+
+import {searchHoc} from 'common/js/mixin'
+
 import './addSong.styl'
 
 class AddSong extends React.Component {
   constructor(props) {
     super(props)
     this.state ={
-      query: '',
       switches: [
         {
           name: '最近播放'
@@ -30,8 +35,10 @@ class AddSong extends React.Component {
       currentIndex: 0
     }
     this.hide = this.hide.bind(this)
-    this.blurInput = this.blurInput.bind(this)
     this.switch = this.switch.bind(this)
+    this.refreshList = this.refreshList.bind(this)
+    this.selectSong = this.selectSong.bind(this)
+    this.selectSuggest = this.selectSuggest.bind(this)
   }
 
   static propTypes = {
@@ -41,6 +48,13 @@ class AddSong extends React.Component {
   static defaultProps = {
     showFlag: false
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.showFlag) {
+      this.refreshList()
+    }
+  }
+  
 
   hide(e) {
     e.stopPropagation()
@@ -56,32 +70,33 @@ class AddSong extends React.Component {
     el.style.display = 'none'
   }
 
-  onQueryChange = debounce((query) => {
-    this.setState({
-      query
-    })
-  }, 300)
-
   switch(i) {
     this.setState({
       currentIndex: i
     })
   }
 
-  blurInput() {
-    this.refs.searchBox.blur()
+  selectSuggest(v) {
+    this.refs.topTip.show()
+    this.props.insertSong(v)
+    this.props.saveSearch()
   }
 
-  selectSuggest() {
-
+  selectSong(song, index) {
+    if (index !== 0) {
+      this.props.insertSong(new Song(song))
+      this.refs.topTip.show()
+    }
   }
 
-  selectSong() {
-
-  }
-
-  addQuery(query) {
-    this.refs.searchBox.setQuery(query)
+  refreshList() {
+    setTimeout(() => {
+      if (this.state.currentIndex === 0) {
+        this.refs.songList.refresh()
+      } else {
+        this.refs.searchList.refresh()
+      }
+    })
   }
 
   render() {
@@ -105,11 +120,11 @@ class AddSong extends React.Component {
           </div>
           <div className="search-box-wrapper">
             <SearchBox
-              ref="searchBox"
+              ref={this.props.searchRef}
               placeHolder="搜索歌曲"
-              onInput={this.onQueryChange}></SearchBox>
+              onInput={this.props.onQueryChange}></SearchBox>
           </div>
-          <div className="shortcut" style={{"display": !this.state.query ? '' : 'none'}}>
+          <div className="shortcut" style={{"display": !this.props.query ? '' : 'none'}}>
             <Switch
               switches={this.state.switches}
               currentIndex={this.state.currentIndex}
@@ -125,7 +140,9 @@ class AddSong extends React.Component {
                     className="list-scroll"
                     data={playHistory}
                   >
-                    <SongList songs={playHistory} select={this.selectSong}></SongList>
+                    <div className="list-inner">
+                      <SongList songs={playHistory} select={this.selectSong}></SongList>
+                    </div>
                   </Scroll>
                 :
                   <Scroll
@@ -137,26 +154,34 @@ class AddSong extends React.Component {
                     <div className="list-inner">
                       <SearchList
                         deleteOne={this.props.deleteSearchHistory}
-                        selectItem={this.addQuery}
+                        selectItem={this.props.addQuery}
                         searches={searchHistory}></SearchList>
                     </div>
                   </Scroll>
               }
             </div>
           </div>
-          <div className="search-result" style={{'display': this.state.query ? '' : 'none'}}>
+          <div className="search-result" style={{'display': this.props.query ? '' : 'none'}}>
             <Suggest
-              query={this.state.query}
+              query={this.props.query}
               showSinger={false}
               selectItem={this.selectSuggest}
-              onBeforeScroll={this.blurInput}></Suggest>
+              onBeforeScroll={this.props.blurInput}></Suggest>
           </div>
+          <TopTip
+            ref="topTip"
+          >
+            <div className="tip-title">
+              <i className="icon-ok"></i>
+              <span className="text">1首歌曲已经添加到播放列表</span>
+            </div>
+          </TopTip>
         </div>
       </CSSTransition>
     )
   }
 }
 
-AddSong = connect(state => state)(AddSong)
+AddSong = searchHoc(connect(null, {insertSong})(AddSong))
 
 export default AddSong
