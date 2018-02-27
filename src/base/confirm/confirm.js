@@ -46,7 +46,7 @@ export default class Confrim extends React.Component {
 
   render() {
     return (
-      <div className={"confirm " + (this.state.showFlag ? 'confirm-fade-enter-active' : '')} style={{'display': !this.state.showFlag ? 'none' : 'block'}}>
+      <div className={"confirm " + (this.state.showFlag ? 'confirm-fade-enter-active' : '')} style={{'display': !this.state.showFlag ? 'none' : 'block'}} onClick={(e) => e.stopPropagation()}>
         <div className="confirm-wrapper">
           <div className="confirm-content">
             <p className="text">{this.props.text}</p>

@@ -36,7 +36,7 @@
 
 #### 3、动画 [react-transition-group](https://reactcommunity.org/react-transition-group/#CSSTransition-prop-onEntered)
 
-- `CSSTranstion` 模块: 嵌套动画，需要将
+- `CSSTranstion` 模块: 嵌套动画，需要将各阶段的动画过程都写出来，没有渲染元素
 
     ```
     .fade-enter {
@@ -73,7 +73,7 @@
 
     - 不足之处：无法对子路由切走时(即没有dom元素时)应用 `exit、exit-active` 动画
 
-- `TransitionGroup` 模块用来做删除列表的动画， 类似 `vue` 的 `<transition-group> `
+- `TransitionGroup` 模块用来做删除列表的动画， 类似 `vue` 的 `<transition-group> `，会渲染成一个 `div` 元素
 
 
 #### 4、mixin

@@ -113,6 +113,15 @@ export function deleteSong(song) {
   }
 }
 
+export function deleteSonglist() {
+  return dispatch => {
+    dispatch(actions.set_currentIndex(-1))
+    dispatch(actions.set_playList([]))
+    dispatch(actions.set_sequenceList([]))
+    dispatch(actions.set_playing(false))
+  }
+}
+
 export function saveSearchHistory(query) {
   return dispatch => {
     dispatch(actions.setSearchHistory(saveSearch(query)))

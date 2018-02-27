@@ -15,7 +15,7 @@ import {
   set_playMode,
   set_playList
 } from 'store/action-creator'
-import {deleteSong} from 'store/action'
+import {deleteSong, deleteSonglist} from 'store/action'
 
 import './playList.styl'
 
@@ -28,24 +28,33 @@ class PlayList extends React.Component{
     this.show = this.show.bind(this)
     this.hide = this.hide.bind(this)
     this.scrollToCurrent = this.scrollToCurrent.bind(this)
+    this.showConfirm = this.showConfirm.bind(this)
+    this.confirmClear = this.confirmClear.bind(this)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.player.playList.length) {
+      this.hide()
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const oldSong = this.props.player.currentSong
     const newSong = nextProps.player.currentSong
+    const sequenceList = nextProps.player.sequenceList
+
     // if (!nextState.showFlag || newSong.id === oldSong.id) {
     //   return false
     // }
-    this.scrollToCurrent(newSong)
+    this.scrollToCurrent(newSong, sequenceList)
     return true
   }
-  
+
   show() {
     this.setState({
       showFlag: true
     }, () => {
       this.refs.listContent.refresh()
-      this.scrollToCurrent(this.props.player.currentSong)
+      this.scrollToCurrent(this.props.player.currentSong, this.props.player.sequenceList)
     })
   }
 
@@ -63,8 +72,8 @@ class PlayList extends React.Component{
     el.style.display = 'none'
   }
 
-  scrollToCurrent(current) {
-    const index = this.props.player.sequenceList.findIndex(v => {
+  scrollToCurrent(current, sequenceList) {
+    const index = sequenceList.findIndex(v => {
       return current.id === v.id
     })
     this.refs.listContent.scrollToElement([...this.refs.listGroup.children[0].children][index], 300)
@@ -87,14 +96,20 @@ class PlayList extends React.Component{
     }
     v.deleting = true
     this.props.deleteSong(v)
-    if (!this.props.player.playList.length) {
-      this.hide()
-    }
     setTimeout(() => {
       v.deleting = false
     }, 200)
   }
-  
+
+  showConfirm() {
+    this.refs.confirm.show()
+  }
+
+  confirmClear() {
+    this.props.deleteSonglist()
+    this.hide()
+  }
+
   render() {
     const {player: {mode, currentSong, sequenceList}} = this.props
     const modeText = mode === playMode.sequence ? '顺序播放' :  mode === playMode.random ? '随机播放' : '单曲循环'
@@ -117,7 +132,7 @@ class PlayList extends React.Component{
               <h1 className="title">
                 <i className={"icon " + modeIcon}></i>
                 <span className="text">{modeText}</span>
-                <span className="clear"><i className="icon-clear"></i></span>
+                <span className="clear" onClick={this.showConfirm}><i className="icon-clear"></i></span>
               </h1>
             </div>
             <Scroll
@@ -162,8 +177,9 @@ class PlayList extends React.Component{
           </div>
           <Confirm
             ref="confirm"
-            text="是否清空所有搜索历史"
+            text="是否清空播放列表"
             confirmBtnText="清空"
+            confirm={this.confirmClear}
           ></Confirm>
         </div>
       </CSSTransition>
@@ -171,5 +187,5 @@ class PlayList extends React.Component{
   }
 }
 
-PlayList = connect(state => state, {set_currentIndex, set_playing, deleteSong}, null, {withRef: true})(PlayList)
+PlayList = connect(state => state, {set_currentIndex, set_playing, deleteSong, deleteSonglist}, null, {withRef: true})(PlayList)
 export default PlayList

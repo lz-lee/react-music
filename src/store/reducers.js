@@ -56,7 +56,7 @@ export function player(state = initState.player, action) {
       }
     case types.SET_CURRENT_INDEX:
       // 修改currentIndex的同时，提交currentSong
-      const currentSong = state.playList[payload]
+      const currentSong = state.playList[payload] || {}
       return {
         ...state,
         currentSong,
