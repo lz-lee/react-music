@@ -49,3 +49,8 @@ export const setSearchHistory = list => ({
   type: types.SET_SEARCH_HISTORY,
   payload: list
 })
+
+export const setPlayHistory = list => ({
+  type: types.SET_PLAY_HISTORY,
+  payload: list
+})

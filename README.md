@@ -8,21 +8,33 @@
 
 #### 1、生命周期执行顺序（网络截图）
 
-> will mount (执行一次)
+- 挂载阶段
 
-> render
+    > getDefaultProps
 
-> did mount (执行一次)
+    > getInitailState
 
-> will receive props
+    > will mount (执行一次)
 
-> should update
+    > render
 
-> will update
+    > did mount (执行一次)
 
-> render
+- 更新
 
-> did update
+    > will receive props
+
+    > should update
+
+    > will update
+
+    > render
+
+    > did update
+
+- 卸载
+
+    > will unmount
 
  ![生命周期](./assets/lifecycle.png)
 

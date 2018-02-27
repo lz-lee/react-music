@@ -10,9 +10,8 @@ import ProgressBar from 'base/progressBar/progressBar'
 import ProgressCircle from 'base/progressCircle/progressCircle'
 import PlayList from 'components/playList/playList'
 
-import {
-  set_fullScreen
-} from 'store/action-creator'
+import {set_fullScreen} from 'store/action-creator'
+import {savePlayHistory} from 'store/action'
 
 import {playMode} from 'common/js/config'
 import {prefix} from 'common/js/prefix'
@@ -344,13 +343,19 @@ class Player extends React.Component{
   }
 
   ready() {
+    clearTimeout(this.timer)
     this.setState({
       songReady: true
     })
     this.canLyricPlay = true
+    this.props.savePlayHistory(this.props.currentSong)
+    if (this.state.currentLyric && !this.state.isPureMusic) {
+      this.state.currentLyric.seek(this.state.currentTime * 1000)
+    }
   }
 
   error() {
+    clearTimeout(this.timer)
     this.setState({
       songReady: true
     })
@@ -438,7 +443,7 @@ class Player extends React.Component{
   }
 
   render() {
-    const {playing, fullScreen, playList, sequenceList, mode, currentIndex, currentSong, modeIcon} = this.props
+    const {playing, fullScreen, currentIndex, currentSong, modeIcon} = this.props
     const miniIcon = playing ? 'icon-pause-mini' : 'icon-play-mini'
     const playIcon = playing ? 'icon-pause' : 'icon-play'
 
@@ -575,6 +580,6 @@ class Player extends React.Component{
   }
 }
 
-Player = playListHoc(connect(null, {set_fullScreen})(Player))
+Player = playListHoc(connect(null, {set_fullScreen, savePlayHistory})(Player))
 
 export default Player

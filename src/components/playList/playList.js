@@ -5,6 +5,7 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group'
 
 import Scroll from 'base/scroll/scroll'
 import Confirm from 'base/confirm/confirm'
+import AddSong from 'components/addSong/addSong'
 
 import {playMode} from 'common/js/config'
 import {playListHoc} from 'common/js/mixin'
@@ -17,13 +18,15 @@ class PlayList extends React.Component{
   constructor(props) {
     super(props)
     this.state = {
-      showFlag: false
+      showFlag: false,
+      showAddSong: false
     }
     this.show = this.show.bind(this)
     this.hide = this.hide.bind(this)
     this.scrollToCurrent = this.scrollToCurrent.bind(this)
     this.showConfirm = this.showConfirm.bind(this)
     this.confirmClear = this.confirmClear.bind(this)
+    this.addSong = this.addSong.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -105,6 +108,18 @@ class PlayList extends React.Component{
     this.hide()
   }
 
+  addSong() {
+    this.setState({
+      showAddSong: true
+    })
+  }
+
+  hideAddSong() {
+    this.setState({
+      showAddSong: false
+    })
+  }
+
   render() {
     const {mode, currentSong, sequenceList, modeIcon} = this.props
     const modeText = mode === playMode.sequence ? '顺序播放' :  mode === playMode.random ? '随机播放' : '单曲循环'
@@ -133,6 +148,7 @@ class PlayList extends React.Component{
               ref="listContent"
               className="list-content"
               probeType={3}
+              data={sequenceList}
             >
               <div ref="listGroup">
                 <TransitionGroup>
@@ -160,7 +176,7 @@ class PlayList extends React.Component{
               </div>
             </Scroll>
             <div className="list-operate">
-              <div className="add">
+              <div className="add" onClick={this.addSong}>
                 <i className="icon-add"></i>
                 <span className="text">添加歌曲到队列</span>
               </div>
@@ -175,6 +191,9 @@ class PlayList extends React.Component{
             confirmBtnText="清空"
             confirm={this.confirmClear}
           ></Confirm>
+          <AddSong
+            showFlag={this.state.showAddSong}
+            hide={() => this.hideAddSong()}></AddSong>
         </div>
       </CSSTransition>
     )

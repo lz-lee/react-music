@@ -88,3 +88,12 @@ export function searchHistory(state = initState.searchHistory, action) {
       return state
   }
 }
+
+export function playHistory(state = initState.playHistory, action) {
+  switch (action.type) {
+    case types.SET_PLAY_HISTORY:
+      return [...action.payload]
+    default:
+      return state
+  }
+}
