@@ -1,6 +1,5 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import PropTypes from 'prop-types'
 
 import animations from 'create-keyframe-animation'
 import { CSSTransition } from 'react-transition-group'
@@ -12,16 +11,12 @@ import ProgressCircle from 'base/progressCircle/progressCircle'
 import PlayList from 'components/playList/playList'
 
 import {
-  set_fullScreen,
-  set_playing,
-  set_currentIndex,
-  set_playMode,
-  set_playList
+  set_fullScreen
 } from 'store/action-creator'
 
 import {playMode} from 'common/js/config'
 import {prefix} from 'common/js/prefix'
-import {shuffle} from 'common/js/util'
+import {playListHoc} from 'common/js/mixin'
 
 import './player.styl'
 
@@ -56,7 +51,6 @@ class Player extends React.Component{
     this.format = this.format.bind(this)
     this.handlePercentChangeEnd = this.handlePercentChangeEnd.bind(this)
     this.handlePercentChanging = this.handlePercentChanging.bind(this)
-    this.changeMode = this.changeMode.bind(this)
     this.handleLyric = this.handleLyric.bind(this)
     this.touchStart = this.touchStart.bind(this)
     this.touchMove = this.touchMove.bind(this)
@@ -427,27 +421,6 @@ class Player extends React.Component{
     playListInstance.show()
   }
 
-  changeMode() {
-    const mode = (this.props.mode + 1) % 3
-    this.props.set_playMode(mode)
-    let list = null
-    if (mode === playMode.random) {
-      list = shuffle(this.props.sequenceList)
-    } else {
-      list = this.props.sequenceList
-    }
-    // set list 需要在前，需要根据下一个list来设置currentSong
-    this.props.set_playList(list)
-    this.resetCurrentIndex(list)
-  }
-
-  resetCurrentIndex(list) {
-    let index = list.findIndex(v => {
-      return v.id === this.props.currentSong.id
-    })
-    this.props.set_currentIndex(index)
-  }
-
   format(interval) {
     interval = interval | 0 // 向下取整
     const minute = interval / 60 | 0
@@ -465,10 +438,10 @@ class Player extends React.Component{
   }
 
   render() {
-    const {playing, fullScreen, playList, sequenceList, mode, currentIndex, currentSong} = this.props
+    const {playing, fullScreen, playList, sequenceList, mode, currentIndex, currentSong, modeIcon} = this.props
     const miniIcon = playing ? 'icon-pause-mini' : 'icon-play-mini'
     const playIcon = playing ? 'icon-pause' : 'icon-play'
-    const modeIcon = mode === playMode.sequence ? 'icon-sequence' : mode === playMode.loop ? 'icon-loop' : 'icon-random'
+
     const cdCls = playing ? 'play' : 'play pause'
     const disableCls = this.state.songReady ? '' : 'disable'
     let percent = currentSong && (this.state.currentTime / currentSong.duration)
@@ -555,7 +528,7 @@ class Player extends React.Component{
               </div>
               <div className="operators">
                 <div className="icon i-left">
-                  <i className={modeIcon} onClick={this.changeMode}></i>
+                  <i className={modeIcon} onClick={this.props.changeMode}></i>
                 </div>
                 <div className={`icon i-left ${disableCls}`}>
                   <i className="icon-prev" onClick={this.prev}></i>
@@ -602,12 +575,6 @@ class Player extends React.Component{
   }
 }
 
-Player = connect(state => state.player, {
-  set_fullScreen,
-  set_playing,
-  set_currentIndex,
-  set_playMode,
-  set_playList
-})(Player)
+Player = playListHoc(connect(null, {set_fullScreen})(Player))
 
 export default Player

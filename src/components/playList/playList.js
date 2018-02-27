@@ -7,14 +7,8 @@ import Scroll from 'base/scroll/scroll'
 import Confirm from 'base/confirm/confirm'
 
 import {playMode} from 'common/js/config'
+import {playListHoc} from 'common/js/mixin'
 
-import {
-  set_fullScreen,
-  set_playing,
-  set_currentIndex,
-  set_playMode,
-  set_playList
-} from 'store/action-creator'
 import {deleteSong, deleteSonglist} from 'store/action'
 
 import './playList.styl'
@@ -33,14 +27,14 @@ class PlayList extends React.Component{
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.player.playList.length) {
+    if (!nextProps.playList.length) {
       this.hide()
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const newSong = nextProps.player.currentSong
-    const sequenceList = nextProps.player.sequenceList
+    const newSong = nextProps.currentSong
+    const sequenceList = nextProps.sequenceList
 
     // if (!nextState.showFlag || newSong.id === oldSong.id) {
     //   return false
@@ -54,7 +48,7 @@ class PlayList extends React.Component{
       showFlag: true
     }, () => {
       this.refs.listContent.refresh()
-      this.scrollToCurrent(this.props.player.currentSong, this.props.player.sequenceList)
+      this.scrollToCurrent(this.props.currentSong, this.props.sequenceList)
     })
   }
 
@@ -65,6 +59,7 @@ class PlayList extends React.Component{
   }
 
   exit(el) {
+    // hack 由于render的style直接改变为none，导致动画无效
     el.style.display = 'block'
   }
 
@@ -80,8 +75,8 @@ class PlayList extends React.Component{
   }
 
   selectItem(v, i) {
-    if (this.props.player.mode === playMode.random) {
-      i = this.props.player.playList.findIndex(song => {
+    if (this.props.mode === playMode.random) {
+      i = this.props.playList.findIndex(song => {
         return song.id === v.id
       })
     }
@@ -111,9 +106,8 @@ class PlayList extends React.Component{
   }
 
   render() {
-    const {player: {mode, currentSong, sequenceList}} = this.props
+    const {mode, currentSong, sequenceList, modeIcon} = this.props
     const modeText = mode === playMode.sequence ? '顺序播放' :  mode === playMode.random ? '随机播放' : '单曲循环'
-    const modeIcon = mode === playMode.sequence ? 'icon-sequence' : mode === playMode.loop ? 'icon-loop' : 'icon-random'
     return (
       <CSSTransition
         in={this.state.showFlag}
@@ -130,7 +124,7 @@ class PlayList extends React.Component{
             onClick={(e) => e.stopPropagation()}>
             <div className="list-header">
               <h1 className="title">
-                <i className={"icon " + modeIcon}></i>
+                <i className={"icon " + modeIcon} onClick={this.props.changeMode}></i>
                 <span className="text">{modeText}</span>
                 <span className="clear" onClick={this.showConfirm}><i className="icon-clear"></i></span>
               </h1>
@@ -187,5 +181,5 @@ class PlayList extends React.Component{
   }
 }
 
-PlayList = connect(state => state, {set_currentIndex, set_playing, deleteSong, deleteSonglist}, null, {withRef: true})(PlayList)
+PlayList = playListHoc(connect(null, {deleteSong, deleteSonglist}, null, {withRef: true})(PlayList))
 export default PlayList
