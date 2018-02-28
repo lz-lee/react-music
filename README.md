@@ -106,7 +106,7 @@
 
 - 此外获取引用的常见方法：
 
-    - 获取 `refs`：以下方式均可以通过 `this.refs.input` 获取
+    - 元素获取 `refs`：以下方式均可以通过 `this.refs.input` 获取
 
         ```
         <input ref={input => this.input = input}>
@@ -114,9 +114,43 @@
         <input ref="input">
 
         ```
+    - 父组件获取子组件 `refs`, 给子组件传递一个值为函数的引用
+
+        ```
+            function Child(props) {
+                return (
+                    <div>
+                        <input ref={props.inputRef}>
+                    </div>
+                )
+            }
+
+            class Parent extends React.Component {
+
+                show() {
+                    this.inputChildRef.show()
+                }
+
+                render() {
+                    <Child inputRef=(el => this.inputChildRef = el)></Child>
+                }
+            }
+        ```
 
     - [官网](https://reactjs.org/docs/refs-and-the-dom.html)并不推荐过度使用 `refs` 操作 `DOM`，指定显示隐藏方法，不如传递属性
 
     - 自定义高阶组件获取子组件 `ref` 和 `connect` 类似
 
         - [HOC](https://segmentfault.com/a/1190000008112017#articleHeader12)
+
+### 总结
+
+- 工作状态不饱和的情况下，写完react的聊天app总感觉不过瘾，由于在掘金上看到[react音乐app](https://juejin.im/user/5a35207c5188252bca04f07d)相关文章，临渊羡鱼不如回家织网，用react全家桶重构之以求对react更进一步学习，对比最新源码重新学习黄老师的[音乐app课程](https://coding.imooc.com/learn/list/107.html)。
+
+- 写 `vue` 版本比 `react` 版本相差无几，从使用框架上来看在生命周期、 `router` 、状态存储、 setState与双向绑定、以及 `mixin` 与 `HOC` 略有差异外，其他逻辑交互部分均是js内功的体现。
+
+- 此外slider组件尚未完成better-scorll版本，之前并没有使用react做实际生产项目，没有做过多的react性能优化。有一起进阶学react的可以一起讨论哇。
+
+- 写完怀念写vue的感觉，QAQ（逃～～～～～
+
+- test git rebase -i 能否将远程已经提交的合并
