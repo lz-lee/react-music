@@ -8,7 +8,7 @@ import {
   set_playList
 } from 'store/action-creator'
 
-import {saveSearchHistory, deleteSearchHistory} from 'store/action'
+import {saveSearchHistory, deleteSearchHistory, saveFavoriteList, deleteFavoriteList} from 'store/action'
 
 import {playMode} from 'common/js/config'
 import {shuffle, debounce} from 'common/js/util'
@@ -20,16 +20,18 @@ export const playListHoc = (WrapperComponent) => {
       this.state = {}
       this.changeMode = this.changeMode.bind(this)
       this.show = this.show.bind(this)
+      this.toggleFavorite = this.toggleFavorite.bind(this)
+      this.getFavoriteIcon = this.getFavoriteIcon.bind(this)
     }
 
     changeMode() {
-      const mode = (this.props.mode + 1) % 3
+      const mode = (this.props.player.mode + 1) % 3
       this.props.set_playMode(mode)
       let list = null
       if (mode === playMode.random) {
-        list = shuffle(this.props.sequenceList)
+        list = shuffle(this.props.player.sequenceList)
       } else {
-        list = this.props.sequenceList
+        list = this.props.player.sequenceList
       }
       // set list 需要在前，需要根据下一个list来设置currentSong
       this.props.set_playList(list)
@@ -38,7 +40,7 @@ export const playListHoc = (WrapperComponent) => {
 
     resetCurrentIndex(list) {
       let index = list.findIndex(v => {
-        return v.id === this.props.currentSong.id
+        return v.id === this.props.player.currentSong.id
       })
       this.props.set_currentIndex(index)
     }
@@ -48,23 +50,50 @@ export const playListHoc = (WrapperComponent) => {
       instance && instance.show()
     }
 
+    toggleFavorite(song) {
+      if (this.isFavorite(song)) {
+        this.props.deleteFavoriteList(song)
+      } else {
+        this.props.saveFavoriteList(song)
+      }
+    }
+
+    getFavoriteIcon(song) {
+      return this.isFavorite(song) ? 'icon icon-favorite' : 'icon icon-not-favorite'
+    }
+
+    isFavorite(song) {
+      const index = this.props.favoriteList.findIndex((item) => {
+        return item.id === song.id
+      })
+      return index > -1
+    }
+
     render() {
-      const {mode} = this.props
+      const {player: {mode}} = this.props
       const modeIcon = mode === playMode.sequence ? 'icon-sequence' : mode === playMode.loop ? 'icon-loop' : 'icon-random'
       let props ={
         ...this.props,
+        ...this.props.player,
         modeIcon
       }
       return (
-        <WrapperComponent {...props} changeMode={this.changeMode} ref="wrapperComponent"/>
+        <WrapperComponent
+          {...props}
+          changeMode={this.changeMode}
+          toggleFavorite={this.toggleFavorite}
+          getFavoriteIcon={this.getFavoriteIcon}
+          ref="wrapperComponent"/>
       )
     }
   }
-  return connect(state => state.player, {
+  return connect(state => state, {
     set_playing,
     set_currentIndex,
     set_playMode,
-    set_playList
+    set_playList,
+    saveFavoriteList,
+    deleteFavoriteList
   }, null, {withRef: true})(PlayHoc)
 }
 

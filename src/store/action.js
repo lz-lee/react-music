@@ -1,7 +1,7 @@
 import * as actions from './action-creator'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-import {saveSearch, deleteSearch, clearSearch, savePlay} from 'common/js/cache'
+import {saveSearch, deleteSearch, clearSearch, savePlay, saveFavorite, deleteFavorite} from 'common/js/cache'
 
 export function setDisc(data) {
   return dispatch => {
@@ -143,6 +143,18 @@ export function clearSearchHistory(query) {
 export function savePlayHistory(song) {
   return dispatch => {
     dispatch(actions.setPlayHistory(savePlay(song)))
+  }
+}
+
+export function deleteFavoriteList(song) {
+  return dispatch => {
+    dispatch(actions.setFavorite(deleteFavorite(song)))
+  }
+}
+
+export function saveFavoriteList(song) {
+  return dispatch => {
+    dispatch(actions.setFavorite(saveFavorite(song)))
   }
 }
 

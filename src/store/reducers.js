@@ -97,3 +97,12 @@ export function playHistory(state = initState.playHistory, action) {
       return state
   }
 }
+
+export function favoriteList(state = initState.favoriteList, action) {
+  switch (action.type) {
+    case types.SET_FAVORITE_LIST:
+      return [...action.payload]
+    default:
+      return state
+  }
+}

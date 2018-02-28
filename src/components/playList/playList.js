@@ -37,13 +37,13 @@ class PlayList extends React.Component{
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    const oldSong = this.props.currentSong
     const newSong = nextProps.currentSong
     const sequenceList = nextProps.sequenceList
 
-    // if (!nextState.showFlag || newSong.id === oldSong.id) {
-    //   return false
-    // }
-    this.scrollToCurrent(newSong, sequenceList)
+    if (newSong.id !== oldSong.id) {
+      this.scrollToCurrent(newSong, sequenceList)
+    }
     return true
   }
 
@@ -100,6 +100,10 @@ class PlayList extends React.Component{
     }, 200)
   }
 
+  toggleFavorite(v, e) {
+    e.stopPropagation()
+    this.props.toggleFavorite(v)
+  }
   showConfirm() {
     this.refs.confirm.show()
   }
@@ -164,8 +168,8 @@ class PlayList extends React.Component{
                         <li className="item" onClick={() => this.selectItem(v, i)}>
                           <i className={"current " + (currentSong.id === v.id ? 'icon-play' : '')}></i>
                           <span className="text">{v.name}</span>
-                          <span className="like">
-                            <i className="icon-not-favorite"></i>
+                          <span className="like" onClick={(e) => this.toggleFavorite(v, e)}>
+                            <i className={this.props.getFavoriteIcon(v)}></i>
                           </span>
                           <span className="delete" onClick={(e) => this.deleteOne(v, e)}>
                             <i className="icon-delete"></i>

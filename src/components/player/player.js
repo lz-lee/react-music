@@ -545,7 +545,7 @@ class Player extends React.Component{
                   <i className="icon-next" onClick={this.next}></i>
                 </div>
                 <div className="icon i-right">
-                  <i className="icon icon-not-favorite"></i>
+                  <i className={this.props.getFavoriteIcon(currentSong)} onClick={() => this.props.toggleFavorite(currentSong)}></i>
                 </div>
               </div>
             </div>
