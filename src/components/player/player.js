@@ -90,10 +90,11 @@ class Player extends React.Component{
         currentLineNum: 0
       })
     }
-    this.refs.audio.src = nextSong.url
+    let audio = this.refs.audio
+    audio.src = nextSong.url
     //
     setTimeout(() => {
-      this.refs.audio.play()
+      audio.play()
     }, 20)
     clearTimeout(this.timer)
     this.timer = setTimeout(() => {
